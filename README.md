@@ -1,119 +1,66 @@
-# Multimodal Deep Learning for Crop Disease Detection
+# Multimodal Multi-Context Aware Paddy Disease Classification
 
-A research prototype investigating whether combining **visual features** (crop leaf images) with **environmental/agronomic context** (variety, crop age, regional climate baselines) improves crop disease classification accuracy over image-only baselines.
+![Status](https://img.shields.io/badge/Status-Complete-green)
+![PyTorch](https://img.shields.io/badge/Framework-PyTorch-EE4C2C)
+![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688)
+![React](https://img.shields.io/badge/Frontend-React-61DAFB)
 
-## Research Question
+A professional research implementation for identifying paddy diseases using a multimodal fusion of visual leaf features and agronomic context, augmented by real-time environmental risk analysis.
 
-> *Can context-aware multimodal fusion (image + tabular environmental features) outperform unimodal image classification for paddy disease detection, and does Grad-CAM analysis reveal more pathologically meaningful attention patterns in the multimodal model?*
+## 🚀 Overview
+Traditional disease classification relies solely on images. This system improves reliability by combining:
+1. **Visual Features**: ResNet-18 extracted from leaf images.
+2. **Agronomic Context**: Paddy variety and plant age.
+3. **Runtime Context**: Real-time weather and geographic data via external APIs.
 
-## Architecture
+## 🛠️ Architecture
+The system employs a **Late Fusion** architecture:
+- **Visual Stream**: Image $\rightarrow$ ResNet-18 $\rightarrow$ 512-d vector.
+- **Tabular Stream**: Variety + Age $\rightarrow$ MLP $\rightarrow$ 64-d vector.
+- **Fusion**: Concatenation $\rightarrow$ Dense Layers $\rightarrow$ 10 Disease Classes.
+- **Context Layer**: Runtime API data is used for interpretation, not as trained features.
 
-```
-┌─────────────────┐    ┌──────────────────────┐
-│  Image Stream   │    │   Tabular Stream     │
-│  (ResNet-18)    │    │   (MLP Encoder)      │
-│  → 512-d feat   │    │   → 64-d feat        │
-└────────┬────────┘    └──────────┬───────────┘
-         │                        │
-         └──────┬─────────────────┘
-                │  Concatenation
-         ┌──────▼──────┐
-         │ Fusion Head │
-         │ 576 → 256   │
-         │ → N classes │
-         └─────────────┘
-```
+## 📦 Installation & Setup
 
-## Ablation Study
-
-| Experiment | Input | Purpose |
-|---|---|---|
-| **A** – Image Only | Leaf images | Unimodal visual baseline |
-| **B** – Tabular Only | Variety + Age + Environment | Context-only ceiling |
-| **D** – Multimodal | Image + Tabular (fusion) | Primary hypothesis test |
-
-## Quick Start
-
-### Prerequisites
-- Python ≥ 3.10 (3.12+ recommended)
-- [uv](https://docs.astral.sh/uv/) package manager
-
-### Setup
+### 1. Clone the Repository
 ```bash
-# Clone and enter project
-git clone <repo-url> && cd crop-detection
-
-# Create virtual environment and install dependencies
-uv venv .venv
-.venv/Scripts/activate   # Windows
-uv pip install -r requirements.txt
+git clone https://github.com/saikoushik2108/crop-disease-detection.git
+cd crop-disease-detection
 ```
 
-### Download Data
-Download the [Paddy Doctor](https://www.kaggle.com/competitions/paddy-disease-classification) dataset and extract:
-- `train_images/` → `data/raw/train_images/`
-- `train.csv` → `data/raw/train.csv`
-
-### Run Pipeline
+### 2. Backend Setup
 ```bash
-# Step 1: Prepare data splits
-python src/data/prepare_data.py
+python -m venv .venv
+source .venv/bin/activate  # Linux/Mac
+.venv\\Scripts\\activate     # Windows
+pip install -r requirements.txt
+```
+Configure your `.env` file based on `.env.example`.
 
-# Step 2: Train all experiments (debug mode: 3 epochs)
-python src/training/train_all.py --debug
+### 3. Dataset & Models
+- Place the Paddy Doctor dataset in `data/raw/` (See `data/README.md`).
+- Place trained weights in `models/` (See `models/README.md`).
 
-# Step 2 alt: Full training (25 epochs)
-python src/training/train_all.py
-
-# Step 3: Launch API
+### 4. Running the System
+```bash
+# Start Backend
 uvicorn api.main:app --reload
+
+# Start Frontend
+cd frontend
+npm install
+npm run dev
 ```
 
-### Run Tests
-```bash
-python -m pytest tests/ -v
-```
+## 🔬 Research Features
+- **Multi-Context Awareness**: Combines predictive ML with real-time environmental risk indicators.
+- **Explainability**: Integrated Grad-CAM heatmaps to visualize disease-driving regions of the leaf.
+- **Scientific Honesty**: Strict separation between trained modalities and runtime context to prevent data fabrication.
 
-## Project Structure
-
-```
-crop-detection/
-├── configs/config.yaml          # Centralized configuration
-├── src/
-│   ├── data/                    # Dataset class, splitter, preparation
-│   ├── models/                  # ResNet18, MLP, Multimodal fusion
-│   ├── preprocessing/           # Image transforms, tabular pipeline
-│   ├── training/                # Trainer engine, ablation orchestrator
-│   ├── evaluation/              # Metrics, Grad-CAM XAI
-│   └── utils/                   # Config, seeding, hardware detection
-├── api/main.py                  # FastAPI inference endpoint
-├── tests/                       # Pytest suite
-├── docs/                        # Research documentation
-│   ├── architecture.md
-│   ├── data_pipeline.md
-│   ├── training.md
-│   ├── evaluation.md
-│   ├── limitations.md           # ⚠ MANDATORY READING
-│   └── api.md
-├── data/raw/                    # User-provided dataset
-├── models/checkpoints/          # Saved model weights
-└── results/                     # Metrics, plots, error analysis
-```
-
-## Key Design Decisions
-
-1. **Data leakage prevention**: `TabularPreprocessor` is fitted exclusively on the training split; val/test use frozen transforms.
-2. **Reproducibility**: All random seeds are fixed globally (NumPy, PyTorch, Python `random`).
-3. **Stratified splitting**: Class proportions are maintained across train/val/test.
-4. **No temporal fabrication**: Environmental variables are agro-ecological baselines, not fabricated per-image sensor data. See [limitations.md](docs/limitations.md).
-
-## ⚠ Limitations
-
-This project has important scientific constraints documented in [`docs/limitations.md`](docs/limitations.md). Key points:
-- No true longitudinal early prediction is possible with current public datasets
-- Environmental variables are regional baselines, not per-leaf sensor readings
-- Results on the development benchmark dataset are for pipeline verification only
-
-## License
-
-This project is for academic/research purposes.
+## 📂 Project Structure
+- `src/`: Core ML pipeline (Data $\rightarrow$ Models $\rightarrow$ Training $\rightarrow$ Inference).
+- `api/`: FastAPI backend implementation.
+- `frontend/`: Professional React dashboard.
+- `docs/`: Architecture, Deployment, and API guides.
+- `research/`: Data integrity reports and ablation study results.
+- `models/`: Model configuration and weights management.
