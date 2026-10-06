@@ -1,42 +1,64 @@
-# Byte-compiled / optimized / DLL files
+# Git Ignore Configuration
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-
-# Virtual environments
 .venv/
 venv/
 ENV/
-
-# Distribution / packaging
+env/
+build/
+dist/
 *.egg-info/
+
+# ML / PyTorch / TensorFlow
+.ipynb_checkpoints/
+runs/
+wandb/
+mlruns/
+checkpoints/
+models/checkpoints/
+*.pt
+*.pth
+*.onnx
+*.h5
+*.ckpt
+
+# Data
+data/raw/
+data/processed/
+*.csv
+!models/*.json
+!configs/*.yaml
+
+# Frontend
+node_modules/
 dist/
 build/
+.next/
+.cache/
 
-# IDE
+# Environment/Secrets
+.env
+.env.*
+!.env.example
+secrets.json
+
+# IDE / OS
 .vscode/
 .idea/
-*.swp
-*.swo
-
-# OS
 .DS_Store
 Thumbs.db
 
-# Model checkpoints (large files)
-models/checkpoints/*.pth
-
-# Results (regenerable)
-results/metrics/*.csv
-results/metrics/*.json
-results/plots/*.png
-results/error_analysis/*.csv
-
-# Data (large / user-provided)
-data/raw/train_images/
-data/raw/train.csv
-data/processed/splits/
-data/processed/*.json
-
-# Logs
+# Logs & Temp
 *.log
+tmp/
+temp/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Results/Generated Artifacts
+results/
+research/figures/
