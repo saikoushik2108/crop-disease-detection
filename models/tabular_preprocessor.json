@@ -1,0 +1,27 @@
+{
+  "variety_to_idx": {
+    "<unk>": 0,
+    "ADT45": 1,
+    "AndraPonni": 2,
+    "AtchayaPonni": 3,
+    "IR20": 4,
+    "KarnatakaPonni": 5,
+    "Onthanel": 6,
+    "Ponni": 7,
+    "RR": 8,
+    "Surya": 9,
+    "Zonal": 10
+  },
+  "continuous_cols": [
+    "age"
+  ],
+  "env_cols": [],
+  "scaler_params": {
+    "age": {
+      "mean": 64.01990664470071,
+      "std": 8.974280255340984,
+      "median": 67.0
+    }
+  },
+  "is_fitted": true
+}

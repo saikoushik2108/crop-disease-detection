@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paddy Doctor AI — Multimodal Crop Disease Detection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --bg-card-hover: rgba(24, 33, 53, 0.85);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(16, 185, 129, 0.4);
+      --primary: #10b981;
+      --primary-glow: rgba(16, 185, 129, 0.25);
+      --accent: #06b6d4;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      padding: 32px 0 24px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 36px;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .header-badges {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .api-link {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      transition: all 0.2s;
+    }
+
+    .api-link:hover {
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    /* Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Glass Cards */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #f1f5f9;
+    }
+
+    /* Upload Area */
+    .upload-zone {
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: rgba(255, 255, 255, 0.02);
+      position: relative;
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--primary);
+      background: rgba(16, 185, 129, 0.04);
+    }
+
+    .upload-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .upload-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .upload-hint {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    #file-input {
+      display: none;
+    }
+
+    .preview-container {
+      margin-top: 18px;
+      display: none;
+      position: relative;
+    }
+
+    .preview-img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .remove-img-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-top: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .select-input, .text-input {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-main);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .select-input:focus, .text-input:focus {
+      border-color: var(--primary);
+    }
+
+    .age-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .age-slider {
+      flex: 1;
+      accent-color: var(--primary);
+    }
+
+    .age-badge {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #34d399;
+      min-width: 65px;
+      text-align: center;
+    }
+
+    .stage-indicator {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* Action Button */
+    .submit-btn {
+      width: 100%;
+      margin-top: 28px;
+      padding: 14px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 4px 16px var(--primary-glow);
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px var(--primary-glow);
+      filter: brightness(1.08);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Results Panel */
+    .results-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 420px;
+      color: var(--text-dim);
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .results-placeholder svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      opacity: 0.4;
+    }
+
+    .results-active {
+      display: none;
+    }
+
+    .diag-banner {
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 20px;
+    }
+
+    .diag-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .diag-disease {
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 4px 0 8px;
+      text-transform: capitalize;
+    }
+
+    .diag-disease.healthy {
+      color: #34d399;
+    }
+
+    .diag-confidence {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .conf-bar-bg {
+      flex: 1;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .conf-bar-fill {
+      height: 100%;
+      background: linear-gradient(to right, #10b981, #06b6d4);
+      border-radius: 9999px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .conf-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* Top 3 Breakdown */
+    .top3-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .top3-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .top3-name {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .top3-prob {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Advisory Card */
+    .advisory-card {
+      margin-top: 20px;
+      padding: 16px;
+      background: rgba(16, 185, 129, 0.06);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 12px;
+    }
+
+    .advisory-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #34d399;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .advisory-text {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .sample-pill-group {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .sample-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sample-pill:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container header-content">
+      <div class="brand">
+        <div class="brand-icon">🌾</div>
+        <div>
+          <h1 class="brand-title">Paddy Doctor Multimodal AI</h1>
+          <p class="brand-subtitle">In-Field Crop Disease Diagnostics (Vision + Cultivar + Phenology)</p>
+        </div>
+      </div>
+      <div class="header-badges">
+        <div class="badge">
+          <span class="badge-dot"></span>
+          ResNet18 Multimodal Fusion Live
+        </div>
+        <a href="/docs" target="_blank" class="api-link">API Docs (Swagger) &rarr;</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="dashboard-grid">
+
+      <!-- Left Column: Diagnostic Inputs -->
+      <section class="card">
+        <h2 class="card-title">
+          <span>📸</span> Leaf Image & Agronomic Metadata
+        </h2>
+
+        <!-- Upload Zone -->
+        <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+          <span class="upload-icon">🍃</span>
+          <div class="upload-text">Click to upload or drag & drop leaf photo</div>
+          <div class="upload-hint">Supports JPEG / PNG field captures (1080p, 480p)</div>
+          <input type="file" id="file-input" accept="image/jpeg,image/png">
+        </div>
+
+        <!-- Image Preview -->
+        <div class="preview-container" id="preview-box">
+          <img id="preview-image" class="preview-img" alt="Uploaded Leaf Preview">
+          <button type="button" class="remove-img-btn" onclick="clearImage(event)">&times;</button>
+        </div>
+
+        <!-- Preset Sample Buttons -->
+        <div class="sample-pill-group">
+          <span style="font-size: 11px; color: var(--text-dim); display: flex; align-items: center; margin-right: 4px;">Preset Samples:</span>
+          <button type="button" class="sample-pill" onclick="loadSample('blast', 'ADT45', 65)">Blast (ADT45)</button>
+          <button type="button" class="sample-pill" onclick="loadSample('bacterial_panicle_blight', 'ADT45', 72)">Panicle Blight (72d)</button>
+          <button type="button" class="sample-pill" onclick="loadSample('dead_heart', 'Ponni', 80)">Dead Heart (Ponni)</button>
+          <button type="button" class="sample-pill" onclick="loadSample('normal', 'KarnatakaPonni', 50)">Healthy Leaf (50d)</button>
+        </div>
+
+        <!-- Agronomic Metadata -->
+        <div class="form-group">
+          <label class="form-label" for="variety-select">Paddy Cultivar / Variety</label>
+          <select id="variety-select" class="select-input">
+            <option value="ADT45">ADT45 (High Yielding Tamil Nadu Short-Duration)</option>
+            <option value="KarnatakaPonni">KarnatakaPonni (Medium Slender Grain)</option>
+            <option value="Ponni">Ponni (Traditional Fine Rice)</option>
+            <option value="AtchayaPonni">AtchayaPonni</option>
+            <option value="Zonal">Zonal Trial Line</option>
+            <option value="AndraPonni">AndraPonni</option>
+            <option value="Onthanel">Onthanel (Local Southern Cultivar)</option>
+            <option value="IR20">IR20 (IRRI Semi-Dwarf Selection)</option>
+            <option value="RR">RR (Research Line)</option>
+            <option value="Surya">Surya</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label class="form-label" for="age-slider" style="margin-bottom: 0;">Crop Age from Sowing (Days)</label>
+            <span class="age-badge" id="age-display">65 days</span>
+          </div>
+          <div class="age-slider-row">
+            <input type="range" id="age-slider" class="age-slider" min="45" max="82" value="65" oninput="updateAge(this.value)">
+          </div>
+          <div class="stage-indicator" id="stage-text">Phenological Phase: Flowering / Heading Stage</div>
+        </div>
+
+        <button type="button" id="submit-btn" class="submit-btn" onclick="runDiagnosis()">
+          <span class="spinner" id="btn-spinner"></span>
+          <span id="btn-text">Run Multimodal Diagnosis</span>
+        </button>
+      </section>
+
+      <!-- Right Column: Diagnostic Results -->
+      <section class="card">
+        <h2 class="card-title">
+          <span>🔬</span> Diagnostic Findings & Agronomic Advisory
+        </h2>
+
+        <!-- Placeholder when idle -->
+        <div class="results-placeholder" id="placeholder-box">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <div style="font-size: 15px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">Awaiting Leaf Sample</div>
+          <div style="font-size: 13px;">Upload a photograph and click "Run Multimodal Diagnosis"</div>
+        </div>
+
+        <!-- Active Results Display -->
+        <div class="results-active" id="results-box">
+          <div class="diag-banner">
+            <div class="diag-label">Primary Diagnostic Target</div>
+            <div class="diag-disease" id="diag-disease-name">—</div>
+            <div class="diag-confidence">
+              <div class="conf-bar-bg">
+                <div class="conf-bar-fill" id="conf-fill" style="width: 0%;"></div>
+              </div>
+              <div class="conf-value" id="conf-text">0.0%</div>
+            </div>
+          </div>
+
+          <div class="top3-title">Top Differential Diagnoses</div>
+          <div id="top3-container"></div>
+
+          <div class="advisory-card">
+            <div class="advisory-title">
+              <span>📋</span> Agronomic Treatment Advisory
+            </div>
+            <p class="advisory-text" id="advisory-text">—</p>
+          </div>
+
+          <div style="margin-top: 18px; font-size: 11px; color: var(--text-dim); display: flex; justify-content: space-between;">
+            <span id="meta-used-text">Modality: Multimodal Fusion</span>
+            <span id="variety-age-echo">ADT45 • 65 days</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    let activeFile = null;
+
+    // Age stage calculator
+    function getStageName(age) {
+      if (age < 50) return "Tillering Stage (Vegetative Phase)";
+      if (age < 62) return "Panicle Initiation Stage (Reproductive Phase)";
+      if (age < 72) return "Flowering / Heading Stage";
+      if (age < 78) return "Grain Filling Stage (Ripening Phase)";
+      return "Late Ripening & Maturity Stage";
+    }
+
+    function updateAge(val) {
+      document.getElementById("age-display").innerText = val + " days";
+      document.getElementById("stage-text").innerText = "Phenological Phase: " + getStageName(parseInt(val));
+    }
+
+    // Drag and Drop
+    const dropZone = document.getElementById("drop-zone");
+    const fileInput = document.getElementById("file-input");
+
+    ['dragenter', 'dragover'].forEach(name => {
+      dropZone.addEventListener(name, (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    });
+
+    ['dragleave', 'drop'].forEach(name => {
+      dropZone.addEventListener(name, (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); });
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      if (e.dataTransfer.files.length) {
+        handleFileSelect(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length) {
+        handleFileSelect(e.target.files[0]);
+      }
+    });
+
+    function handleFileSelect(file) {
+      activeFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById("preview-image").src = e.target.result;
+        document.getElementById("drop-zone").style.display = "none";
+        document.getElementById("preview-box").style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearImage(e) {
+      if (e) e.stopPropagation();
+      activeFile = null;
+      fileInput.value = "";
+      document.getElementById("preview-box").style.display = "none";
+      document.getElementById("drop-zone").style.display = "block";
+    }
+
+    // Sample Loader
+    async function loadSample(disease, variety, age) {
+      document.getElementById("variety-select").value = variety;
+      document.getElementById("age-slider").value = age;
+      updateAge(age);
+
+      // Create a canvas-drawn authentic visual representation of disease sample
+      const canvas = document.createElement("canvas");
+      canvas.width = 480;
+      canvas.height = 640;
+      const ctx = canvas.getContext("2d");
+
+      // Draw leaf background
+      ctx.fillStyle = "#1e3a1e";
+      ctx.fillRect(0, 0, 480, 640);
+      
+      const grad = ctx.createLinearGradient(120, 0, 360, 640);
+      grad.addColorStop(0, "#2d5a27");
+      grad.addColorStop(0.5, "#3b7a33");
+      grad.addColorStop(1, "#254e20");
+
+      ctx.beginPath();
+      ctx.ellipse(240, 320, 140, 300, 0, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Draw characteristic lesion symptoms
+      if (disease === "blast") {
+        ctx.fillStyle = "#a87140";
+        for (let i = 0; i < 7; i++) {
+          ctx.beginPath();
+          ctx.ellipse(200 + i * 10, 180 + i * 45, 12, 28, 0.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else if (disease === "bacterial_panicle_blight") {
+        ctx.fillStyle = "#b45309";
+        for (let i = 0; i < 9; i++) {
+          ctx.fillRect(180 + (i % 3) * 35, 120 + i * 30, 24, 18);
+        }
+      } else if (disease === "dead_heart") {
+        ctx.fillStyle = "#d97706";
+        ctx.fillRect(230, 50, 20, 480);
+      }
+
+      canvas.toBlob((blob) => {
+        const file = new File([blob], `${disease}_sample.jpg`, { type: "image/jpeg" });
+        handleFileSelect(file);
+      }, "image/jpeg");
+    }
+
+    // Run Diagnosis
+    async function runDiagnosis() {
+      if (!activeFile) {
+        alert("Please upload a leaf photograph first or choose one of the preset sample buttons.");
+        return;
+      }
+
+      const submitBtn = document.getElementById("submit-btn");
+      const btnText = document.getElementById("btn-text");
+      const btnSpinner = document.getElementById("btn-spinner");
+
+      submitBtn.disabled = true;
+      btnSpinner.style.display = "inline-block";
+      btnText.innerText = "Analyzing Symptoms...";
+
+      const variety = document.getElementById("variety-select").value;
+      const age = document.getElementById("age-slider").value;
+
+      const formData = new FormData();
+      formData.append("image", activeFile);
+      formData.append("variety", variety);
+      formData.append("age", age);
+
+      try {
+        const res = await fetch("/predict", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!res.ok) {
+          throw new Error("Prediction API failed with status " + res.status);
+        }
+
+        const data = await res.json();
+        renderResults(data);
+      } catch (err) {
+        alert("Error running inference: " + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        btnSpinner.style.display = "none";
+        btnText.innerText = "Run Multimodal Diagnosis";
+      }
+    }
+
+    function renderResults(data) {
+      document.getElementById("placeholder-box").style.display = "none";
+      const resultsBox = document.getElementById("results-box");
+      resultsBox.style.display = "block";
+
+      const nameEl = document.getElementById("diag-disease-name");
+      const cleanName = data.predicted_disease.replace(/_/g, " ");
+      nameEl.innerText = cleanName;
+      nameEl.className = "diag-disease" + (data.is_healthy ? " healthy" : "");
+
+      const pct = (data.confidence * 100).toFixed(1) + "%";
+      document.getElementById("conf-fill").style.width = pct;
+      document.getElementById("conf-text").innerText = pct;
+
+      // Top 3
+      const top3Container = document.getElementById("top3-container");
+      top3Container.innerHTML = "";
+      data.top_3_predictions.forEach(p => {
+        const row = document.createElement("div");
+        row.className = "top3-row";
+        row.innerHTML = `
+          <span class="top3-name">${p.disease.replace(/_/g, " ")}</span>
+          <span class="top3-prob">${(p.confidence * 100).toFixed(1)}%</span>
+        `;
+        top3Container.appendChild(row);
+      });
+
+      document.getElementById("advisory-text").innerText = data.advisory_recommendation;
+      document.getElementById("meta-used-text").innerText = data.modality_used;
+      document.getElementById("variety-age-echo").innerText = `${data.variety} • ${data.crop_age_days} days`;
+    }
+  </script>
+</body>
+</html>

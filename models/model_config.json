@@ -1,0 +1,23 @@
+{
+  "num_classes": 10,
+  "num_varieties": 11,
+  "num_continuous": 1,
+  "classes": [
+    "bacterial_leaf_blight",
+    "bacterial_leaf_streak",
+    "bacterial_panicle_blight",
+    "blast",
+    "brown_spot",
+    "dead_heart",
+    "downy_mildew",
+    "hispa",
+    "normal",
+    "tungro"
+  ],
+  "image_size": 224,
+  "variety_embedding_dim": 16,
+  "continuous_feature_dim": 16,
+  "tabular_embedding_dim": 64,
+  "fusion_hidden_dim": 128,
+  "dropout": 0.3
+}

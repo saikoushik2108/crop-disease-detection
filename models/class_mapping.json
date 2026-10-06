@@ -1,0 +1,12 @@
+{
+  "bacterial_leaf_blight": 0,
+  "bacterial_leaf_streak": 1,
+  "bacterial_panicle_blight": 2,
+  "blast": 3,
+  "brown_spot": 4,
+  "dead_heart": 5,
+  "downy_mildew": 6,
+  "hispa": 7,
+  "normal": 8,
+  "tungro": 9
+}

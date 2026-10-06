@@ -1,0 +1,59 @@
+# Global Multimodal Crop Disease Detection Configuration
+project:
+  name: "crop-disease-multimodal-ai"
+  crop: "paddy"
+  version: "1.0.0"
+  seed: 42
+  num_workers: 0  # 0 for safe Windows multiprocessing
+
+paths:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  metadata_dir: "data/metadata"
+  train_metadata: "data/raw/train.csv"
+  splits_dir: "data/processed/splits"
+  checkpoint_dir: "models/checkpoints"
+  results_dir: "results"
+  metrics_dir: "results/metrics"
+  figures_dir: "results/figures"
+  confusion_matrices_dir: "results/confusion_matrices"
+  error_analysis_dir: "results/error_analysis"
+
+dataset:
+  num_classes: 10
+  classes:
+    - "bacterial_leaf_blight"
+    - "bacterial_leaf_streak"
+    - "bacterial_panicle_blight"
+    - "blast"
+    - "brown_spot"
+    - "dead_heart"
+    - "downy_mildew"
+    - "hispa"
+    - "normal"
+    - "tungro"
+  image_size: 224
+  split_ratios:
+    train: 0.70
+    val: 0.15
+    test: 0.15
+
+training:
+  batch_size: 32
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  num_epochs: 15
+  early_stopping_patience: 4
+  lr_patience: 2
+  lr_factor: 0.5
+  use_amp: true  # Automatic Mixed Precision if GPU available
+
+models:
+  resnet_backbone: "resnet18"
+  pretrained: true
+  image_embedding_dim: 512
+  variety_embedding_dim: 16
+  continuous_feature_dim: 16
+  tabular_embedding_dim: 64
+  fusion_hidden_dim: 128
+  dropout: 0.3

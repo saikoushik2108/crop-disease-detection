@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Model checkpoints (large files)
+models/checkpoints/*.pth
+
+# Results (regenerable)
+results/metrics/*.csv
+results/metrics/*.json
+results/plots/*.png
+results/error_analysis/*.csv
+
+# Data (large / user-provided)
+data/raw/train_images/
+data/raw/train.csv
+data/processed/splits/
+data/processed/*.json
+
+# Logs
+*.log
