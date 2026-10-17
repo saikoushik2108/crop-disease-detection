@@ -19,11 +19,11 @@ wandb/
 mlruns/
 checkpoints/
 models/checkpoints/
-*.pt
-*.pth
 *.onnx
 *.h5
 *.ckpt
+# NOTE: *.pt and *.pth are tracked via Git LFS (not ignored)
+# so model weights are available for cloud deployment on Render/Railway
 
 # Data
 data/raw/
