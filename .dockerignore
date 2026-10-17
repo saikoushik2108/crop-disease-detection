@@ -1,0 +1,15 @@
+.git
+.gitignore
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+tests
+data/raw
+data/processed
+results/figures
+paper
+frontend/node_modules
+.env
