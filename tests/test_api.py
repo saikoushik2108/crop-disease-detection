@@ -1,3 +1,4 @@
+import asyncio
 import sys
 from pathlib import Path
 
@@ -7,23 +8,15 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 import pytest
-import torch
-from api.main import load_artifacts, health_check, MODEL_STATE, ADVISORY_DATABASE
+from api.main import health_check, engine, ADVISORY_DATABASE
 
 
-def test_api_startup_and_health():
-    """Verify that artifacts and models load properly and health check responds correctly."""
-    load_artifacts()
-    assert MODEL_STATE["config"] is not None
-    assert len(MODEL_STATE["class_names"]) == 10
-    assert MODEL_STATE["model"] is not None
-
-    h = health_check()
-    assert h.status == "healthy"
-    assert h.model_loaded is True
-    assert h.num_classes == 10
-    assert "bacterial_panicle_blight" in h.classes
-    assert "blast" in h.classes
+def test_api_health_endpoint():
+    """Verify that the health check endpoint returns healthy status and metadata."""
+    res = asyncio.run(health_check())
+    assert res["status"] == "healthy"
+    assert res["model_loaded"] is True
+    assert res["num_classes"] == 10
 
 
 def test_advisory_database_completeness():
@@ -43,3 +36,10 @@ def test_advisory_database_completeness():
     for c in classes:
         assert c in ADVISORY_DATABASE
         assert len(ADVISORY_DATABASE[c]) > 10
+
+
+def test_inference_engine_loaded():
+    """Verify that the singleton InferenceEngine has loaded the multimodal model."""
+    assert engine is not None
+    assert engine.model is not None
+    assert engine.preprocessor is not None

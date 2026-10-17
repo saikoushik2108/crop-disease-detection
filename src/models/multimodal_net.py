@@ -26,9 +26,13 @@ class MultimodalCropNet(nn.Module):
         continuous_proj_dim: int = 16,
         tabular_embedding_dim: int = 64,
         fusion_hidden_dim: int = 128,
-        dropout: float = 0.3
+        dropout: float = 0.3,
+        ablation_mode: str = "full"
     ):
         super().__init__()
+        self.ablation_mode = ablation_mode
+        self.variety_embedding_dim = variety_embedding_dim
+        self.continuous_proj_dim = continuous_proj_dim
         
         # 1. Vision Stream
         self.image_encoder = ImageBaselineResNet(
@@ -70,9 +74,20 @@ class MultimodalCropNet(nn.Module):
         variety_idx: torch.Tensor,
         cont_features: torch.Tensor
     ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        """Extract individual modality vectors and fused representation."""
+        """Extract individual modality vectors and fused representation with strict ablation masking."""
         f_img = self.image_encoder.extract_features(image)
-        f_tab = self.tabular_encoder.extract_features(variety_idx, cont_features)
+        
+        if self.ablation_mode == "image_variety":
+            # Exclude age from forward pass
+            masked_cont = torch.zeros_like(cont_features)
+            f_tab = self.tabular_encoder.extract_features(variety_idx, masked_cont)
+        elif self.ablation_mode == "image_age":
+            # Exclude variety from forward pass
+            masked_var = torch.zeros_like(variety_idx)
+            f_tab = self.tabular_encoder.extract_features(masked_var, cont_features)
+        else:
+            f_tab = self.tabular_encoder.extract_features(variety_idx, cont_features)
+
         f_fused = torch.cat([f_img, f_tab], dim=1)
         return f_img, f_tab, f_fused
 

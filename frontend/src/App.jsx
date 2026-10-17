@@ -151,10 +151,25 @@ const App = () => {
                     onChange={(e) => setVariety(e.target.value)}
                     className="w-full p-3 rounded-xl border border-slate-700 bg-slate-800 text-white focus:ring-2 focus:ring-green-500 outline-none transition-all"
                   >
-                    <option value="ADT45">ADT45 (High Yielding Tamil Nadu Short-Duration)</option>
-                    <option value="IR64">IR64 (International Standard)</option>
-                    <option value="Sonalika">Sonalika (Drought Resistant)</option>
-                    <option value="Other">Other Variety</option>
+                    <optgroup label="🌾 Telangana Premier Cultivars">
+                      <option value="BPT5204">BPT 5204 / Samba Mahsuri (Most Popular Telangana Fine Grain)</option>
+                      <option value="RNR15048">RNR 15048 / Telangana Sona (Low GI Rice - PJTSAU)</option>
+                      <option value="KNM118">KNM 118 / Kunaram Sannalu (High Yielding Telangana Selection)</option>
+                      <option value="MTU1010">MTU 1010 / Cottondora Sannalu (Early Duration Telangana Favorite)</option>
+                      <option value="JGL18047">JGL 18047 / Bathukamma (PJTSAU Rice Selection)</option>
+                      <option value="WGL44">WGL 44 / Siddhi (Telangana Semi-Dry/Rainfed)</option>
+                      <option value="IR64">IR-64 / IR-20 (Telangana Semi-Dwarf Selection)</option>
+                    </optgroup>
+                    <optgroup label="🌱 Other Southern & Traditional Cultivars">
+                      <option value="ADT45">ADT45 (High Yielding Tamil Nadu Short-Duration)</option>
+                      <option value="KarnatakaPonni">KarnatakaPonni (Medium Slender Grain)</option>
+                      <option value="Ponni">Ponni (Traditional Fine Rice)</option>
+                      <option value="AtchayaPonni">AtchayaPonni</option>
+                      <option value="Zonal">Zonal Trial Line</option>
+                      <option value="AndraPonni">AndraPonni</option>
+                      <option value="Onthanel">Onthanel (Local Southern Cultivar)</option>
+                      <option value="Surya">Surya</option>
+                    </optgroup>
                   </select>
                 </div>
 

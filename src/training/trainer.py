@@ -35,7 +35,8 @@ class ModelTrainer:
         checkpoint_dir: str = "models/checkpoints",
         model_name: str = "model",
         early_stopping_patience: int = 4,
-        lr_scheduler: Optional[Any] = None
+        lr_scheduler: Optional[Any] = None,
+        unfreeze_backbone_after: Optional[int] = None
     ):
         self.model = model.to(device)
         self.train_loader = train_loader
@@ -49,6 +50,8 @@ class ModelTrainer:
         self.model_name = model_name
         self.patience = early_stopping_patience
         self.scheduler = lr_scheduler
+        self.unfreeze_backbone_after = unfreeze_backbone_after
+        self.backbone_unfrozen = False
 
         self.history = {
             "train_loss": [],
@@ -153,6 +156,19 @@ class ModelTrainer:
         print(f"\n[Starting Training: {self.model_name}] (Modality: {self.mode})")
         
         for epoch in range(1, num_epochs + 1):
+            # --- Gradual Unfreezing ---
+            if (self.unfreeze_backbone_after is not None
+                    and not self.backbone_unfrozen
+                    and epoch > self.unfreeze_backbone_after):
+                # Unfreeze image encoder backbone
+                if hasattr(self.model, 'image_encoder'):
+                    for param in self.model.image_encoder.parameters():
+                        param.requires_grad = True
+                    self.backbone_unfrozen = True
+                    trainable = sum(p.numel() for p in self.model.parameters() if p.requires_grad)
+                    print(f"\n[UNFREEZE] Epoch {epoch}: ResNet18 backbone unfrozen for fine-tuning")
+                    print(f"  Total trainable parameters: {trainable:,}")
+
             start_time = time.time()
             train_loss, train_acc = self.train_epoch()
             val_loss, val_acc, val_f1, _, _ = self.evaluate()

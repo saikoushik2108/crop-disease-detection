@@ -6,7 +6,7 @@
   <title>Paddy Doctor AI — Multimodal Crop Disease Detection</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Ramabhadra&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-dark: #090d16;
@@ -22,6 +22,7 @@
       --text-dim: #64748b;
       --danger: #ef4444;
       --warning: #f59e0b;
+      --whatsapp: #25D366;
       --radius: 16px;
     }
 
@@ -51,9 +52,9 @@
 
     /* Header */
     header {
-      padding: 32px 0 24px;
+      padding: 28px 0 20px;
       border-bottom: 1px solid var(--border-color);
-      margin-bottom: 36px;
+      margin-bottom: 32px;
     }
 
     .header-content {
@@ -71,14 +72,14 @@
     }
 
     .brand-icon {
-      width: 44px;
-      height: 44px;
+      width: 46px;
+      height: 46px;
       background: linear-gradient(135deg, #10b981, #059669);
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 24px;
       box-shadow: 0 0 20px var(--primary-glow);
     }
 
@@ -97,10 +98,35 @@
       font-weight: 500;
     }
 
-    .header-badges {
+    .header-controls {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Bilingual Toggle Button */
+    .lang-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 700;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      color: #38bdf8;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .lang-toggle-btn:hover {
+      background: rgba(6, 182, 212, 0.22);
+      border-color: #38bdf8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
     }
 
     .badge {
@@ -160,14 +186,14 @@
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
-      padding: 28px;
+      padding: 26px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
 
     .card-title {
       font-size: 17px;
       font-weight: 700;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -178,7 +204,7 @@
     .upload-zone {
       border: 2px dashed rgba(255, 255, 255, 0.15);
       border-radius: 12px;
-      padding: 32px 20px;
+      padding: 26px 20px;
       text-align: center;
       cursor: pointer;
       transition: all 0.25s ease;
@@ -192,8 +218,8 @@
     }
 
     .upload-icon {
-      font-size: 36px;
-      margin-bottom: 12px;
+      font-size: 34px;
+      margin-bottom: 8px;
       display: block;
     }
 
@@ -209,19 +235,73 @@
       color: var(--text-dim);
     }
 
-    #file-input {
+    #file-input, #camera-input {
       display: none;
     }
 
+    /* Camera & Browse Buttons Row */
+    .upload-btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .camera-btn {
+      padding: 10px 14px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #34d399;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .camera-btn:hover {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: #10b981;
+      transform: translateY(-1px);
+    }
+
+    .browse-btn {
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .browse-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
     .preview-container {
-      margin-top: 18px;
+      margin-top: 16px;
       display: none;
       position: relative;
     }
 
     .preview-img {
       width: 100%;
-      height: 240px;
+      height: 230px;
       object-fit: cover;
       border-radius: 10px;
       border: 1px solid var(--border-color);
@@ -231,7 +311,7 @@
       position: absolute;
       top: 10px;
       right: 10px;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.75);
       color: white;
       border: none;
       border-radius: 50%;
@@ -246,7 +326,7 @@
 
     /* Form Fields */
     .form-group {
-      margin-top: 20px;
+      margin-top: 18px;
     }
 
     .form-label {
@@ -259,12 +339,12 @@
 
     .select-input, .text-input {
       width: 100%;
-      padding: 12px 14px;
-      background: rgba(15, 23, 42, 0.8);
+      padding: 11px 13px;
+      background: rgba(15, 23, 42, 0.85);
       border: 1px solid var(--border-color);
       border-radius: 10px;
       color: var(--text-main);
-      font-size: 14px;
+      font-size: 13.5px;
       font-family: inherit;
       outline: none;
       transition: border-color 0.2s;
@@ -292,7 +372,7 @@
       padding: 4px 12px;
       border-radius: 8px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       color: #34d399;
       min-width: 65px;
       text-align: center;
@@ -305,10 +385,10 @@
       font-weight: 500;
     }
 
-    /* Action Button */
+    /* Submit Button */
     .submit-btn {
       width: 100%;
-      margin-top: 28px;
+      margin-top: 24px;
       padding: 14px;
       background: linear-gradient(135deg, #10b981, #059669);
       color: white;
@@ -338,6 +418,53 @@
       transform: none;
     }
 
+    /* Results Action Bar: Print & WhatsApp */
+    .action-btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .action-btn {
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      font-family: inherit;
+    }
+
+    .print-btn {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+    }
+
+    .print-btn:hover {
+      background: rgba(56, 189, 248, 0.25);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+    }
+
+    .whatsapp-btn {
+      background: #25D366;
+      color: #0b2612;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+    }
+
+    .whatsapp-btn:hover {
+      background: #22bf5b;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
+    }
+
     /* Results Panel */
     .results-placeholder {
       display: flex;
@@ -364,24 +491,24 @@
     .diag-banner {
       background: rgba(15, 23, 42, 0.6);
       border-radius: 12px;
-      padding: 20px;
+      padding: 18px;
       border: 1px solid var(--border-color);
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .diag-label {
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
     .diag-disease {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 800;
       color: #ffffff;
-      margin: 4px 0 8px;
+      margin: 4px 0 6px;
       text-transform: capitalize;
     }
 
@@ -417,65 +544,6 @@
       color: var(--text-main);
     }
 
-    /* Top 3 Breakdown */
-    .top3-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .top3-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 8px;
-      margin-bottom: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.04);
-    }
-
-    .top3-name {
-      font-size: 13px;
-      font-weight: 600;
-      text-transform: capitalize;
-    }
-
-    .top3-prob {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* Advisory Card */
-    .advisory-card {
-      margin-top: 20px;
-      padding: 16px;
-      background: rgba(16, 185, 129, 0.06);
-      border: 1px solid rgba(16, 185, 129, 0.2);
-      border-radius: 12px;
-    }
-
-    .advisory-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #34d399;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 6px;
-    }
-
-    .advisory-text {
-      font-size: 13px;
-      color: #cbd5e1;
-      line-height: 1.5;
-    }
-
     .sample-pill-group {
       margin-top: 14px;
       display: flex;
@@ -501,7 +569,6 @@
       border-color: rgba(255, 255, 255, 0.2);
     }
 
-    /* Spinner */
     .spinner {
       width: 18px;
       height: 18px;
@@ -515,25 +582,149 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+
+    /* Print Header & Signature elements (hidden on screen, visible on print) */
+    .print-only {
+      display: none;
+    }
+
+    /* ==============================================================
+       PRINT / PDF PRESCRIPTION STYLESHEET
+       ============================================================== */
+    @media print {
+      @page {
+        margin: 12mm 15mm;
+        size: A4 portrait;
+      }
+
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-size: 11pt !important;
+        padding: 0 !important;
+      }
+
+      .no-print, header, .sample-pill-group, .upload-btn-row, #submit-btn,
+      .results-placeholder, .remove-img-btn, .api-link, .lang-toggle-btn,
+      section:first-child .form-group, #drop-zone, .preview-container {
+        display: none !important;
+      }
+
+      .dashboard-grid {
+        display: block !important;
+      }
+
+      .card {
+        background: #ffffff !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+
+      .print-only {
+        display: block !important;
+      }
+
+      .print-header {
+        border-bottom: 3px double #059669;
+        padding-bottom: 12px;
+        margin-bottom: 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .print-header-left h1 {
+        font-size: 18pt;
+        font-weight: 800;
+        color: #065f46;
+        margin: 0;
+      }
+
+      .print-header-left p {
+        font-size: 9pt;
+        color: #475569;
+        margin-top: 2px;
+      }
+
+      .print-meta-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 14px;
+        font-size: 9.5pt;
+      }
+
+      .print-meta-table td {
+        padding: 6px 8px;
+        border: 1px solid #cbd5e1;
+      }
+
+      .diag-banner {
+        background: #f8fafc !important;
+        border: 1.5px solid #059669 !important;
+        color: #0f172a !important;
+        page-break-inside: avoid;
+      }
+
+      .diag-disease {
+        color: #0f172a !important;
+        font-size: 18pt !important;
+      }
+
+      .diag-disease.healthy {
+        color: #059669 !important;
+      }
+
+      #why-occurred-box, #prevention-protocol-box, #weather-card {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #0f172a !important;
+        page-break-inside: avoid;
+        margin-top: 12px !important;
+      }
+
+      #why-occurred-text, #cure-chemical, #cure-biological, #cure-cultural {
+        color: #1e293b !important;
+        font-size: 9.5pt !important;
+      }
+
+      .print-signature-block {
+        margin-top: 35px;
+        padding-top: 15px;
+        border-top: 1px dashed #94a3b8;
+        display: flex;
+        justify-content: space-between;
+        font-size: 9pt;
+        color: #334155;
+        page-break-inside: avoid;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <header>
+  <!-- Screen Header -->
+  <header class="no-print">
     <div class="container header-content">
       <div class="brand">
         <div class="brand-icon">🌾</div>
         <div>
-          <h1 class="brand-title">Paddy Doctor Multimodal AI</h1>
-          <p class="brand-subtitle">In-Field Crop Disease Diagnostics (Vision + Cultivar + Phenology)</p>
+          <h1 class="brand-title" id="lbl-brand-title">Paddy Doctor Multimodal AI</h1>
+          <p class="brand-subtitle" id="lbl-brand-subtitle">In-Field Crop Disease Diagnostics (Vision + Cultivar + Phenology)</p>
         </div>
       </div>
-      <div class="header-badges">
+      <div class="header-controls">
+        <!-- Bilingual Toggle Button -->
+        <button type="button" class="lang-toggle-btn" id="lang-btn" onclick="toggleLanguage()">
+          <span>🌐</span>
+          <span id="lang-btn-text">తెలుగు (Telugu)</span>
+        </button>
+
         <div class="badge">
           <span class="badge-dot"></span>
-          ResNet18 Multimodal Fusion Live
+          <span id="lbl-model-badge">ResNet18 Multimodal Live</span>
         </div>
-        <a href="/docs" target="_blank" class="api-link">API Docs (Swagger) &rarr;</a>
+        <a href="/docs" target="_blank" class="api-link">API Docs &rarr;</a>
       </div>
     </div>
   </header>
@@ -542,17 +733,31 @@
     <div class="dashboard-grid">
 
       <!-- Left Column: Diagnostic Inputs -->
-      <section class="card">
+      <section class="card no-print">
         <h2 class="card-title">
-          <span>📸</span> Leaf Image & Agronomic Metadata
+          <span>📸</span> <span id="lbl-card-input-title">Leaf Image & Agronomic Metadata</span>
         </h2>
 
         <!-- Upload Zone -->
         <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
           <span class="upload-icon">🍃</span>
-          <div class="upload-text">Click to upload or drag & drop leaf photo</div>
-          <div class="upload-hint">Supports JPEG / PNG field captures (1080p, 480p)</div>
+          <div class="upload-text" id="lbl-upload-text">Click to upload or drag & drop leaf photo</div>
+          <div class="upload-hint" id="lbl-upload-hint">Supports JPEG / PNG field captures (1080p, 480p)</div>
+          <!-- Standard file input -->
           <input type="file" id="file-input" accept="image/jpeg,image/png">
+        </div>
+
+        <!-- Dedicated Mobile Camera Input (Environment Rear Lens) -->
+        <input type="file" id="camera-input" accept="image/*" capture="environment">
+
+        <!-- Mobile Camera + Browse Action Buttons -->
+        <div class="upload-btn-row">
+          <button type="button" class="camera-btn" onclick="triggerCamera(event)">
+            <span>📸</span> <span id="lbl-camera-btn">Open Field Camera</span>
+          </button>
+          <button type="button" class="browse-btn" onclick="document.getElementById('file-input').click()">
+            <span>📁</span> <span id="lbl-browse-btn">Browse Files</span>
+          </button>
         </div>
 
         <!-- Image Preview -->
@@ -563,39 +768,80 @@
 
         <!-- Preset Sample Buttons -->
         <div class="sample-pill-group">
-          <span style="font-size: 11px; color: var(--text-dim); display: flex; align-items: center; margin-right: 4px;">Preset Samples:</span>
-          <button type="button" class="sample-pill" onclick="loadSample('blast', 'ADT45', 65)">Blast (ADT45)</button>
-          <button type="button" class="sample-pill" onclick="loadSample('bacterial_panicle_blight', 'ADT45', 72)">Panicle Blight (72d)</button>
-          <button type="button" class="sample-pill" onclick="loadSample('dead_heart', 'Ponni', 80)">Dead Heart (Ponni)</button>
-          <button type="button" class="sample-pill" onclick="loadSample('normal', 'KarnatakaPonni', 50)">Healthy Leaf (50d)</button>
+          <span style="font-size: 11px; color: var(--text-dim); display: flex; align-items: center; margin-right: 4px;" id="lbl-presets">Preset Samples:</span>
+          <button type="button" class="sample-pill" onclick="loadSample('blast', 'BPT5204', 55)">Blast (BPT 5204)</button>
+          <button type="button" class="sample-pill" onclick="loadSample('bacterial_panicle_blight', 'BPT5204', 72)">Panicle Blight (72d)</button>
+          <button type="button" class="sample-pill" onclick="loadSample('dead_heart', 'RNR15048', 50)">Dead Heart (Telangana Sona)</button>
+          <button type="button" class="sample-pill" onclick="loadSample('normal', 'KNM118', 60)">Healthy (KNM 118)</button>
         </div>
 
-        <!-- Agronomic Metadata -->
+        <!-- Agronomic Metadata: Variety -->
         <div class="form-group">
-          <label class="form-label" for="variety-select">Paddy Cultivar / Variety</label>
+          <label class="form-label" for="variety-select" id="lbl-variety">Paddy Cultivar / Variety</label>
           <select id="variety-select" class="select-input">
-            <option value="ADT45">ADT45 (High Yielding Tamil Nadu Short-Duration)</option>
-            <option value="KarnatakaPonni">KarnatakaPonni (Medium Slender Grain)</option>
-            <option value="Ponni">Ponni (Traditional Fine Rice)</option>
-            <option value="AtchayaPonni">AtchayaPonni</option>
-            <option value="Zonal">Zonal Trial Line</option>
-            <option value="AndraPonni">AndraPonni</option>
-            <option value="Onthanel">Onthanel (Local Southern Cultivar)</option>
-            <option value="IR20">IR20 (IRRI Semi-Dwarf Selection)</option>
-            <option value="RR">RR (Research Line)</option>
-            <option value="Surya">Surya</option>
+            <optgroup label="🌾 Telangana Premier Cultivars" id="optgroup-telangana">
+              <option value="BPT5204" selected>BPT 5204 / Samba Mahsuri (Most Popular Telangana Fine Grain)</option>
+              <option value="RNR15048">RNR 15048 / Telangana Sona (Low GI Rice - PJTSAU)</option>
+              <option value="KNM118">KNM 118 / Kunaram Sannalu (High Yielding Telangana Cultivar)</option>
+              <option value="MTU1010">MTU 1010 / Cottondora Sannalu (Early Duration Telangana Favorite)</option>
+              <option value="JGL18047">JGL 18047 / Bathukamma (PJTSAU Rice Selection)</option>
+              <option value="WGL44">WGL 44 / Siddhi (Telangana Semi-Dry/Rainfed)</option>
+              <option value="IR64">IR-64 / IR-20 (Telangana Semi-Dwarf Selection)</option>
+            </optgroup>
+            <optgroup label="🌱 Other Southern & Traditional Cultivars" id="optgroup-other">
+              <option value="ADT45">ADT45 (High Yielding Short-Duration)</option>
+              <option value="KarnatakaPonni">KarnatakaPonni (Medium Slender Grain)</option>
+              <option value="Ponni">Ponni (Traditional Fine Rice)</option>
+              <option value="AtchayaPonni">AtchayaPonni</option>
+              <option value="Zonal">Zonal Trial Line</option>
+              <option value="AndraPonni">AndraPonni</option>
+              <option value="Onthanel">Onthanel (Local Southern Cultivar)</option>
+              <option value="Surya">Surya</option>
+            </optgroup>
           </select>
         </div>
 
+        <!-- Age Slider -->
         <div class="form-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <label class="form-label" for="age-slider" style="margin-bottom: 0;">Crop Age from Sowing (Days)</label>
-            <span class="age-badge" id="age-display">65 days</span>
+            <label class="form-label" for="age-slider" style="margin-bottom: 0;" id="lbl-crop-age">Crop Age from Sowing (Days)</label>
+            <span class="age-badge" id="age-display">55 days</span>
           </div>
           <div class="age-slider-row">
-            <input type="range" id="age-slider" class="age-slider" min="45" max="82" value="65" oninput="updateAge(this.value)">
+            <input type="range" id="age-slider" class="age-slider" min="45" max="82" value="55" oninput="updateAge(this.value)">
           </div>
-          <div class="stage-indicator" id="stage-text">Phenological Phase: Flowering / Heading Stage</div>
+          <div class="stage-indicator" id="stage-text">Phenological Phase: Panicle Initiation Stage (Reproductive Phase)</div>
+        </div>
+
+        <!-- Coordinates & Live Location Input -->
+        <div class="form-group" style="background: rgba(14, 165, 233, 0.05); padding: 14px; border-radius: 12px; border: 1px solid rgba(14, 165, 233, 0.2); margin-top: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label class="form-label" style="margin-bottom: 0; color: #38bdf8; font-weight: 700;" id="lbl-coords-title">📍 Field Coordinates & Live Weather</label>
+            <button type="button" class="sample-pill" onclick="detectGPSLocation()" style="margin: 0; padding: 4px 10px; font-size: 11px; background: rgba(56, 189, 248, 0.2); border-color: #38bdf8; color: #bae6fd;">
+              <span>🎯</span> <span id="lbl-gps-btn">Use My GPS</span>
+            </button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+            <div>
+              <span style="font-size: 11px; color: var(--text-dim);" id="lbl-lat">Latitude (°N)</span>
+              <input type="number" id="lat-input" class="select-input" step="0.0001" value="17.3850" style="padding: 8px 10px; font-family: monospace;">
+            </div>
+            <div>
+              <span style="font-size: 11px; color: var(--text-dim);" id="lbl-lon">Longitude (°E)</span>
+              <input type="number" id="lon-input" class="select-input" step="0.0001" value="78.4867" style="padding: 8px 10px; font-family: monospace;">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px;">
+            <span style="font-size: 10px; color: var(--text-dim); display: flex; align-items: center;" id="lbl-quick-districts">Quick Districts:</span>
+            <button type="button" class="sample-pill" onclick="setCoords(17.3850, 78.4867, 'Hyderabad')">Hyderabad</button>
+            <button type="button" class="sample-pill" onclick="setCoords(18.4386, 79.1288, 'Karimnagar')">Karimnagar</button>
+            <button type="button" class="sample-pill" onclick="setCoords(17.9689, 79.5941, 'Warangal')">Warangal</button>
+            <button type="button" class="sample-pill" onclick="setCoords(18.6725, 78.0941, 'Nizamabad')">Nizamabad</button>
+            <button type="button" class="sample-pill" onclick="setCoords(17.0575, 79.2684, 'Nalgonda')">Nalgonda</button>
+          </div>
+          <div id="location-hint" style="font-size: 11px; color: #94a3b8; margin-top: 6px;">Open-Meteo live temporal telemetry will be retrieved for these coordinates.</div>
         </div>
 
         <button type="button" id="submit-btn" class="submit-btn" onclick="runDiagnosis()">
@@ -605,9 +851,35 @@
       </section>
 
       <!-- Right Column: Diagnostic Results -->
-      <section class="card">
-        <h2 class="card-title">
-          <span>🔬</span> Diagnostic Findings & Agronomic Advisory
+      <section class="card" id="results-card">
+        
+        <!-- Print Letterhead (Only visible during Print / PDF generation) -->
+        <div class="print-only">
+          <div class="print-header">
+            <div class="print-header-left">
+              <h1>🌾 PADDY DOCTOR AI — PHYTOSANITARY PRESCRIPTION</h1>
+              <p>Government of Telangana Agricultural Extension Advisory • Plant Pathology Diagnostic Slip</p>
+            </div>
+            <div style="text-align: right; font-size: 9pt; color: #475569;">
+              <div><strong>Prescription ID:</strong> <span id="print-presc-id">TS-RICE-2026-001</span></div>
+              <div><strong>Date & Time:</strong> <span id="print-date">17 Oct 2026</span></div>
+            </div>
+          </div>
+
+          <table class="print-meta-table">
+            <tr>
+              <td><strong>Farmer / Region:</strong> Telangana Rice Cluster</td>
+              <td><strong>Field Location:</strong> <span id="print-location">Hyderabad (17.38°N, 78.48°E)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Cultivar / Variety:</strong> <span id="print-variety">BPT 5204 (Samba Mahsuri)</span></td>
+              <td><strong>Crop Age & Phenology:</strong> <span id="print-age">55 days (Panicle Initiation)</span></td>
+            </tr>
+          </table>
+        </div>
+
+        <h2 class="card-title no-print">
+          <span>🔬</span> <span id="lbl-card-results-title">Diagnostic Findings & Agronomic Advisory</span>
         </h2>
 
         <!-- Placeholder when idle -->
@@ -615,37 +887,163 @@
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <div style="font-size: 15px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">Awaiting Leaf Sample</div>
-          <div style="font-size: 13px;">Upload a photograph and click "Run Multimodal Diagnosis"</div>
+          <div style="font-size: 15px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;" id="lbl-placeholder-title">Awaiting Leaf Sample</div>
+          <div style="font-size: 13px;" id="lbl-placeholder-sub">Upload a photograph or use camera and click "Run Multimodal Diagnosis"</div>
         </div>
 
         <!-- Active Results Display -->
         <div class="results-active" id="results-box">
+
+          <!-- Action Bar: Print PDF Prescription & WhatsApp Share -->
+          <div class="action-btn-row no-print">
+            <button type="button" class="action-btn print-btn" onclick="printReport()">
+              <span>📄</span> <span id="lbl-print-btn">Print / Save PDF Prescription</span>
+            </button>
+            <button type="button" class="action-btn whatsapp-btn" onclick="shareWhatsApp()">
+              <span>📱</span> <span id="lbl-whatsapp-btn">Share on WhatsApp</span>
+            </button>
+          </div>
+          
+          <!-- Primary Diagnosis Banner -->
           <div class="diag-banner">
-            <div class="diag-label">Primary Diagnostic Target</div>
-            <div class="diag-disease" id="diag-disease-name">—</div>
-            <div class="diag-confidence">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <div class="diag-label" id="lbl-identified-pathology">Identified Pathology</div>
+                <div class="diag-disease" id="diag-disease-name">—</div>
+                <div style="font-size: 12px; color: #94a3b8; font-style: italic; margin-top: 2px;" id="diag-scientific-name">—</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;" id="lbl-field-risk">Field Risk Index</div>
+                <div id="risk-badge" style="font-size: 14px; font-weight: 800; padding: 4px 10px; border-radius: 8px; display: inline-block; margin-top: 4px; background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);">
+                  CRITICAL (88%)
+                </div>
+              </div>
+            </div>
+
+            <!-- Model Probability -->
+            <div class="diag-confidence" style="margin-top: 14px;">
+              <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 4px; display: flex; justify-content: space-between;">
+                <span id="lbl-conf-title">Deep Learning Diagnostic Confidence</span>
+                <span class="conf-value" id="conf-text">0.0%</span>
+              </div>
               <div class="conf-bar-bg">
                 <div class="conf-bar-fill" id="conf-fill" style="width: 0%;"></div>
               </div>
-              <div class="conf-value" id="conf-text">0.0%</div>
             </div>
           </div>
 
-          <div class="top3-title">Top Differential Diagnoses</div>
-          <div id="top3-container"></div>
-
-          <div class="advisory-card">
-            <div class="advisory-title">
-              <span>📋</span> Agronomic Treatment Advisory
+          <!-- Section: Why Did This Disease Occur? -->
+          <div id="why-occurred-box" style="margin-top: 16px; padding: 14px; background: rgba(245, 158, 11, 0.06); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 12px;">
+            <div style="font-size: 13px; font-weight: 700; color: #fbbf24; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+              <span>❓</span> <span id="lbl-why-occurred-title">Why Did This Disease Occur? (Causal Analysis)</span>
             </div>
-            <p class="advisory-text" id="advisory-text">—</p>
+            <p id="why-occurred-text" style="font-size: 12.5px; color: #e2e8f0; line-height: 1.6; white-space: pre-line; margin: 0;">
+              Analyzing convergence of leaf symptoms, cultivar susceptibility, and local weather...
+            </p>
           </div>
 
-          <div style="margin-top: 18px; font-size: 11px; color: var(--text-dim); display: flex; justify-content: space-between;">
+          <!-- Section: Detailed Prevention & Cure Protocol -->
+          <div id="prevention-protocol-box" style="margin-top: 16px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 14px;">
+            <div style="font-size: 13px; font-weight: 700; color: #34d399; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+              <span>🛡️</span> <span id="lbl-protocol-title">Step-by-Step Prevention & Cure Protocol</span>
+            </div>
+
+            <!-- 1. Chemical Cure -->
+            <div style="margin-bottom: 12px; background: rgba(0, 0, 0, 0.2); padding: 10px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+              <div style="font-size: 12px; font-weight: 700; color: #38bdf8; margin-bottom: 4px;" id="lbl-cure-chemical-title">💊 Immediate Chemical / Therapeutic Cure:</div>
+              <div id="cure-chemical" style="font-size: 12.5px; color: #cbd5e1; line-height: 1.5; white-space: pre-line;">—</div>
+            </div>
+
+            <!-- 2. Biological Control -->
+            <div style="margin-bottom: 12px; background: rgba(0, 0, 0, 0.2); padding: 10px; border-radius: 8px; border-left: 3px solid #34d399;">
+              <div style="font-size: 12px; font-weight: 700; color: #34d399; margin-bottom: 4px;" id="lbl-cure-bio-title">🌿 Biological & Organic Interventions:</div>
+              <div id="cure-biological" style="font-size: 12.5px; color: #cbd5e1; line-height: 1.5; white-space: pre-line;">—</div>
+            </div>
+
+            <!-- 3. Preventive Cultural Practices -->
+            <div style="background: rgba(0, 0, 0, 0.2); padding: 10px; border-radius: 8px; border-left: 3px solid #fbbf24;">
+              <div style="font-size: 12px; font-weight: 700; color: #fbbf24; margin-bottom: 4px;" id="lbl-cure-cult-title">🌾 Cultural Practices & Water Management:</div>
+              <div id="cure-cultural" style="font-size: 12.5px; color: #cbd5e1; line-height: 1.5; white-space: pre-line;">—</div>
+            </div>
+          </div>
+
+          <!-- Section: Live Microclimate & Temporal Sensors -->
+          <div id="weather-card" style="margin-top: 16px; padding: 14px; background: rgba(14, 165, 233, 0.06); border: 1px solid rgba(14, 165, 233, 0.2); border-radius: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 12px; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
+                <span>🌤️</span> <span id="lbl-weather-title">Live Microclimate:</span> <span id="weather-location">Telangana (17.38°N, 78.48°E)</span>
+              </span>
+              <span id="weather-status-badge" style="font-size: 10px; padding: 2px 8px; border-radius: 9999px; background: rgba(56, 189, 248, 0.15); color: #7dd3fc; font-weight: 600;">Open-Meteo Live</span>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; font-size: 12px;">
+              <div style="background: rgba(0, 0, 0, 0.2); padding: 6px 8px; border-radius: 6px;">
+                <span style="color: var(--text-dim); font-size: 11px;" id="lbl-temp">Temp</span>
+                <div style="font-weight: 700; color: #f1f5f9;" id="weather-temp">—</div>
+              </div>
+              <div style="background: rgba(0, 0, 0, 0.2); padding: 6px 8px; border-radius: 6px;">
+                <span style="color: var(--text-dim); font-size: 11px;" id="lbl-humidity">Humidity</span>
+                <div style="font-weight: 700; color: #f1f5f9;" id="weather-humidity">—</div>
+              </div>
+              <div style="background: rgba(0, 0, 0, 0.2); padding: 6px 8px; border-radius: 6px;">
+                <span style="color: var(--text-dim); font-size: 11px;" id="lbl-vpd">VPD</span>
+                <div style="font-weight: 700; color: #f1f5f9;" id="weather-vpd">—</div>
+              </div>
+            </div>
+
+            <!-- Epidemiological Risk Indicators -->
+            <div style="font-size: 11px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 8px;">
+              <div style="display: flex; justify-content: space-between;">
+                <span id="lbl-blast-risk">Foliar Blast Weather Risk:</span>
+                <strong id="risk-blast" style="color: #34d399;">Low</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span id="lbl-blight-risk">Bacterial Blight Moisture Risk:</span>
+                <strong id="risk-blight" style="color: #34d399;">Low</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span id="lbl-panicle-risk">Panicle Blight Heat Trigger:</span>
+                <strong id="risk-panicle" style="color: #fbbf24;">Moderate</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grad-CAM Saliency Explanation -->
+          <div id="gradcam-card" style="margin-top: 16px; padding: 14px; background: rgba(168, 85, 247, 0.06); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 12px; display: none;">
+            <div style="font-size: 12px; font-weight: 700; color: #c084fc; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+              <span>🔍</span> <span id="lbl-gradcam-title">Grad-CAM Visual Saliency Overlay</span>
+            </div>
+            <img id="gradcam-img" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);" alt="Grad-CAM Heatmap">
+            <div style="font-size: 11px; color: #94a3b8; margin-top: 6px;" id="lbl-gradcam-desc">
+              Red and yellow highlights denote the precise foliar lesion regions attended by the deep network.
+            </div>
+          </div>
+
+          <!-- Top 3 Differential Diagnoses -->
+          <div style="margin-top: 16px;" class="no-print">
+            <div class="top3-title" id="lbl-top3-title">Top 3 Differential Diagnoses</div>
+            <div id="top3-container"></div>
+          </div>
+
+          <div style="margin-top: 18px; font-size: 11px; color: var(--text-dim); display: flex; justify-content: space-between;" class="no-print">
             <span id="meta-used-text">Modality: Multimodal Fusion</span>
-            <span id="variety-age-echo">ADT45 • 65 days</span>
+            <span id="variety-age-echo">BPT5204 • 55 days</span>
           </div>
+
+          <!-- Print Signature & Verification Block -->
+          <div class="print-only print-signature-block">
+            <div>
+              <div><strong>Prescribing Center:</strong> Krishi Vigyan Kendra (KVK) / Digital Extension</div>
+              <div><strong>Diagnostic Model:</strong> ResNet18 Multimodal Deep Fusion System</div>
+              <div style="margin-top: 4px; font-size: 8pt; color: #64748b;">This prescription is algorithmically generated based on computer vision, cultivar sensitivity, and live microclimate data.</div>
+            </div>
+            <div style="text-align: right; min-width: 220px;">
+              <div style="border-bottom: 1px solid #475569; height: 35px; width: 180px; margin-left: auto;"></div>
+              <div style="margin-top: 6px;"><strong>Agricultural Extension Officer (AEO)</strong></div>
+              <div style="font-size: 8pt; color: #64748b;">Department of Agriculture, Telangana</div>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -654,22 +1052,288 @@
 
   <script>
     let activeFile = null;
+    let currentLang = 'en'; // 'en' or 'te'
+    let lastResultData = null; // Store last diagnosis result for instant language translation
 
-    // Age stage calculator
+    // Comprehensive Telugu / English Translation Database
+    const I18N = {
+      en: {
+        brandTitle: "Paddy Doctor Multimodal AI",
+        brandSubtitle: "In-Field Crop Disease Diagnostics (Vision + Cultivar + Phenology)",
+        modelBadge: "ResNet18 Multimodal Live",
+        langBtn: "తెలుగు (Telugu)",
+        cardInputTitle: "Leaf Image & Agronomic Metadata",
+        uploadText: "Click to upload or drag & drop leaf photo",
+        uploadHint: "Supports JPEG / PNG field captures (1080p, 480p)",
+        cameraBtn: "Open Field Camera",
+        browseBtn: "Browse Files",
+        presets: "Preset Samples:",
+        variety: "Paddy Cultivar / Variety",
+        cropAge: "Crop Age from Sowing (Days)",
+        coordsTitle: "📍 Field Coordinates & Live Weather",
+        gpsBtn: "Use My GPS",
+        quickDistricts: "Quick Districts:",
+        lat: "Latitude (°N)",
+        lon: "Longitude (°E)",
+        submitBtn: "Run Multimodal Diagnosis",
+        submittingText: "Analyzing Symptoms...",
+        cardResultsTitle: "Diagnostic Findings & Agronomic Advisory",
+        placeholderTitle: "Awaiting Leaf Sample",
+        placeholderSub: "Upload a photograph or use camera and click 'Run Multimodal Diagnosis'",
+        printBtn: "Print / Save PDF Prescription",
+        whatsappBtn: "Share on WhatsApp",
+        identifiedPathology: "Identified Pathology",
+        fieldRisk: "Field Risk Index",
+        confTitle: "Deep Learning Diagnostic Confidence",
+        whyOccurredTitle: "Why Did This Disease Occur? (Causal Analysis)",
+        protocolTitle: "Step-by-Step Prevention & Cure Protocol",
+        cureChemicalTitle: "💊 Immediate Chemical / Therapeutic Cure:",
+        cureBioTitle: "🌿 Biological & Organic Interventions:",
+        cureCultTitle: "🌾 Cultural Practices & Water Management:",
+        weatherTitle: "Live Microclimate:",
+        top3Title: "Top 3 Differential Diagnoses",
+        temp: "Temp",
+        humidity: "Humidity",
+        vpd: "VPD",
+        blastRisk: "Foliar Blast Weather Risk:",
+        blightRisk: "Bacterial Blight Moisture Risk:",
+        panicleRisk: "Panicle Blight Heat Trigger:",
+        gradcamTitle: "Grad-CAM Visual Saliency Overlay",
+        gradcamDesc: "Red and yellow highlights denote the precise foliar lesion regions attended by the deep network."
+      },
+      te: {
+        brandTitle: "వరి రోగ నిర్ధారణ మల్టీమోడల్ AI",
+        brandSubtitle: "క్షేత్ర స్థాయి వరి తెగుళ్ల నిర్ధారణ (ఫోటో + వరి రకం + వాతావరణం)",
+        modelBadge: "మల్టీమోడల్ మోడల్ సిద్ధంగా ఉంది",
+        langBtn: "English",
+        cardInputTitle: "ఆకు ఫోటో & వ్యవసాయ వివరాలు",
+        uploadText: "ఆకు ఫోటోను ఇక్కడ అప్‌లోడ్ చేయండి లేదా డ్రాగ్ చేయండి",
+        uploadHint: "మొబైల్ కెమెరా లేదా గ్యాలరీ ఫోటోలు (JPEG / PNG)",
+        cameraBtn: "కెమెరాతో ఫోటో తీయండి",
+        browseBtn: "ఫైల్స్ ఎంచుకోండి",
+        presets: "నమూనా కేసులు:",
+        variety: "వరి రకం / విత్తనం",
+        cropAge: "నాటిన రోజుల సంఖ్య (దినాలు)",
+        coordsTitle: "📍 పొలం లొకేషన్ & ప్రత్యక్ష వాతావరణం",
+        gpsBtn: "నా GPS లొకేషన్",
+        quickDistricts: "తెలంగాణ జిల్లాలు:",
+        lat: "అక్షాంశం (Latitude °N)",
+        lon: "రేఖాంశం (Longitude °E)",
+        submitBtn: "వరి రోగ నిర్ధారణ చేయండి",
+        submittingText: "రోగ లక్షణాలను విశ్లేషిస్తోంది...",
+        cardResultsTitle: "రోగ నిర్ధారణ ఫలితాలు & వ్యవసాయ సలహాలు",
+        placeholderTitle: "ఆకు ఫోటో కోసం వేచి ఉంది",
+        placeholderSub: "కెమెరాతో ఫోటో తీయండి లేదా అప్‌లోడ్ చేసి 'వరి రోగ నిర్ధారణ చేయండి' నొక్కండి",
+        printBtn: "ప్రింట్ / PDF సేవ్ చేయండి",
+        whatsappBtn: "వాట్సాప్‌లో షేర్ చేయండి",
+        identifiedPathology: "గుర్తించిన తెగులు",
+        fieldRisk: "ప్రమాద తీవ్రత స్థాయి",
+        confTitle: "మోడల్ నిర్ధారణ విశ్వసనీయత శాతం",
+        whyOccurredTitle: "ఈ తెగులు ఎందుకు వచ్చింది? (కారణాల విశ్లేషణ)",
+        protocolTitle: "నివారణ మరియు చికిత్సా ప్రణాళిక",
+        cureChemicalTitle: "💊 తక్షణ రసాయన మందుల పిచికారీ:",
+        cureBioTitle: "🌿 జీవ నియంత్రణ & సేంద్రీయ పద్ధతులు:",
+        cureCultTitle: "🌾 సాగు పద్ధతులు & నీటి యాజమాన్యం:",
+        weatherTitle: "ప్రత్యక్ష సూక్ష్మ వాతావరణం:",
+        top3Title: "ప్రధాన 3 సంభావ్య తెగుళ్లు",
+        temp: "ఉష్ణోగ్రత",
+        humidity: "గాలిలో తేమ",
+        vpd: "VPD పీడనం",
+        blastRisk: "అగ్గి తెగులు వాతావరణ రిస్క్:",
+        blightRisk: "ఆకు ఎండు తెగులు తేమ రిస్క్:",
+        panicleRisk: "వెన్ను ఎండు తెగులు వేడి రిస్క్:",
+        gradcamTitle: "Grad-CAM రోగ లక్షణాల గుర్తింపు మ్యాప్",
+        gradcamDesc: "ఎరుపు మరియు పసుపు రంగుల మచ్చలు మోడల్ గుర్తించిన ప్రధాన వ్యాధి భాగాలను సూచిస్తాయి."
+      }
+    };
+
+    // Disease Native Telugu Names & Agronomic Recommendations
+    const DISEASE_I18N = {
+      blast: {
+        name_en: "Rice Blast",
+        name_te: "అగ్గి తెగులు (Rice Blast)",
+        sci: "Magnaporthe oryzae (Foliar/Neck Blast)",
+        why_te: "వాతావరణంలో అధిక తేమ (>85%), చల్లటి రాత్రులు (20°C-28°C), మరియు అధిక నత్రజని (యూరియా) వాడకం వల్ల శిలీంధ్రం వ్యాపించి ఆకులపై నూలుకండె ఆకారపు మచ్చలను ఏర్పరుస్తుంది.",
+        cure_chem_te: "1. ట్రైసైక్లాజోల్ 75% WP @ 0.6 గ్రాములు లీటరు నీటికి కలిపి పిచికారీ చేయాలి.\n2. లేదా ఐసోప్రోథియోలేన్ 40% EC @ 1.5 మి.లీ లేదా కాసుగామైసిన్ 3% SL @ 2.5 మి.లీ లీటరు నీటికి కలిపి పిచికారీ చేయాలి.\n3. ఉదయం లేదా సాయంత్రం వేళల్లో ఆకుల పైభాగం, అడుగుభాగం తడిసేలా పిచికారీ చేయాలి.",
+        cure_bio_te: "1. సూడోమోనాస్ ఫ్లోరోసెన్స్ @ 5 గ్రాములు లీటరు నీటికి కలిపి పిచికారీ చేయాలి.\n2. ట్రైకోడెర్మా హార్జియానమ్ వాడకం వల్ల రోగనిరోధక శక్తి పెరుగుతుంది.",
+        cure_cult_te: "1. తెగులు కనిపించిన వెంటనే యూరియా వేయడం తాత్కాలికంగా నిలిపివేయాలి.\n2. పొటాష్ ఎరువును ఎకరాకు 10-15 కిలోలు వేసి మొక్క రోగనిరోధక శక్తిని పెంచాలి.\n3. పైరులో గాలి, వెలుతురు ప్రసరించేలా చూడాలి."
+      },
+      bacterial_leaf_blight: {
+        name_en: "Bacterial Leaf Blight (BLB)",
+        name_te: "బాక్టీరియా ఆకు ఎండు తెగులు (BLB)",
+        sci: "Xanthomonas oryzae pv. oryzae",
+        why_te: "అధిక ఉష్ణోగ్రతలు (25°C-34°C), అధిక తేమ, వర్షాలు మరియు ఈదురు గాలుల వల్ల ఆకులకు కలిగే గాయాల ద్వారా బాక్టీరియా ప్రవేశించి ఆకుల చివర్ల నుండి క్రిందికి పసుపు రంగులోకి మారుస్తూ ఎండబెడుతుంది.",
+        cure_chem_te: "1. స్ట్రెప్టోసైక్లిన్ 1 గ్రాము + కాపర్ ఆక్సిక్లోరైడ్ (COC) 25 గ్రాములు 10 లీటర్ల నీటిలో కలిపి పిచికారీ చేయాలి.\n2. తెగులు తీవ్రత ఎక్కువగా ఉంటే 10-12 రోజుల తర్వాత మళ్ళీ పిచికారీ చేయాలి.",
+        cure_bio_te: "1. వేప నూనె 3% లేదా వేప గింజల కషాయం (NSKE 5%) పిచికారీ చేయాలి.\n2. సూడోమోనాస్ ఫ్లోరోసెన్స్ ద్రావణాన్ని పిచికారీ చేయాలి.",
+        cure_cult_te: "1. పొలంలో నిలిచి ఉన్న నీటిని 3-4 రోజుల పాటు తీసివేసి పొలాన్ని ఆరబెట్టాలి.\n2. నత్రజని ఎరువులను దఫాలుగా వేయాలి; ఒకేసారి ఎక్కువ యూరియా వేయకూడదు.\n3. ఎకరాకు అదనంగా 10-15 కిలోల పొటాష్ ఎరువును వేయాలి."
+      },
+      bacterial_leaf_streak: {
+        name_en: "Bacterial Leaf Streak (BLS)",
+        name_te: "బాక్టీరియా ఆకు గీత తెగులు (BLS)",
+        sci: "Xanthomonas oryzae pv. oryzicola",
+        why_te: "తుంపర వర్షాలు మరియు అధిక గాలి వేగం ఉన్నప్పుడు బాక్టీరియా ఆకుల ఈనెల మధ్య వ్యాపించి సన్నని పారదర్శక పసుపు-గోధుమ గీతలను ఏర్పరుస్తుంది.",
+        cure_chem_te: "1. కాపర్ హైడ్రాక్సైడ్ 77% WP @ 2.0 గ్రా/లీ లేదా కాపర్ ఆక్సిక్లోరైడ్ @ 2.5 గ్రా/లీ పిచికారీ చేయాలి.\n2. తీవ్రత ఉంటే ప్లాంటోమైసిన్ 1.5 గ్రాములు కలిపి పిచికారీ చేయాలి.",
+        cure_bio_te: "సూడోమోనాస్ ఫ్లోరోసెన్స్ 5 గ్రాములు లీటరు నీటికి కలిపి పిచికారీ చేయాలి.",
+        cure_cult_te: "ఆకులపై మంచు లేదా వర్షపు నీరు ఉన్నప్పుడు పొలంలో పనులు చేయకూడదు. గట్లపై కలుపు మొక్కలను తొలగించాలి."
+      },
+      bacterial_panicle_blight: {
+        name_en: "Bacterial Panicle Blight",
+        name_te: "బాక్టీరియా వెన్ను ఎండు తెగులు (BPB)",
+        sci: "Burkholderia glumae",
+        why_te: "వెన్ను విరిచే మరియు పూత దశలో రాత్రి ఉష్ణోగ్రతలు అధికంగా (>28°C) ఉండటం వల్ల బాక్టీరియా గింజలపై విషపదార్థాన్ని ఉత్పత్తి చేసి తాలు గింజలుగా మారుస్తుంది.",
+        cure_chem_te: "1. కాసుగామైసిన్ 3% SL @ 2.0 మి.లీ లీటరు నీటికి కలిపి చిరుపొట్ట మరియు పూత దశల్లో పిచికారీ చేయాలి.\n2. కాపర్ హైడ్రాక్సైడ్ @ 2 గ్రా/లీ పిచికారీ ద్వితీయ వ్యాప్తిని అరికడుతుంది.",
+        cure_bio_te: "బాసిల్లస్ అమైలోలిక్విఫేసియెన్స్ తో విత్తన శుద్ధి మరియు చిరుపొట్ట దశలో పిచికారీ చేయాలి.",
+        cure_cult_te: "పూత దశలో యూరియా ఎరువును ఎక్కువగా వేయరాదు. ధ్రువీకరించబడిన విత్తనాన్ని మాత్రమే వాడాలి."
+      },
+      brown_spot: {
+        name_en: "Brown Spot",
+        name_te: "గోధుమ రంగు మచ్చ తెగులు (Brown Spot)",
+        sci: "Bipolaris oryzae / Cochliobolus miyabeanus",
+        why_te: "భూమిలో పొటాష్, జింక్ మరియు పోషకాల లోపం, తేలికపాటి నేలలు మరియు బెట్ట పరిస్థితుల్లో ఆకులపై గుండ్రటి గోధుమ రంగు మచ్చలు ఏర్పడతాయి.",
+        cure_chem_te: "1. మాంకోజెబ్ 75% WP @ 2.5 గ్రాములు లేదా ప్రొపికొనాజోల్ 25% EC @ 1.0 మి.లీ లీటరు నీటికి కలిపి పిచికారీ చేయాలి.\n2. లేదా కార్బెండజిమ్ + మాంకోజెబ్ (సాఫ్) @ 2.0 గ్రా/లీ వాడవచ్చు.",
+        cure_bio_te: "ట్రైకోడెర్మా విరిడి లేదా సూడోమోనాస్ తో విత్తన శుద్ధి చేయాలి.",
+        cure_cult_te: "ఎకరాకు 10 కిలోల జింక్ సల్ఫేట్ మరియు తగిన మోతాదులో పొటాష్ వేసి నేల పోషక లోపాన్ని సరిచేయాలి."
+      },
+      dead_heart: {
+        name_en: "Dead Heart (Stem Borer)",
+        name_te: "కాండం తొలిచే పురుగు / మొవ్వ చచ్చు (Dead Heart)",
+        sci: "Scirpophaga incertulas (Yellow Stem Borer)",
+        why_te: "పసుపు కాండం తొలిచే పురుగు లార్వాలు కాండం లోపలికి చొచ్చుకుపోయి నాళాలను తినడం వల్ల మధ్య మొవ్వ ఎండిపోయి చనిపోతుంది (డెడ్ హార్ట్).",
+        cure_chem_te: "1. క్లోరాంట్రానిలిప్రోల్ 18.5% SC @ 0.3 మి.లీ (60 మి.లీ ఎకరాకు) లేదా కార్టాప్ హైడ్రోక్లోరైడ్ 50% SP @ 2.0 గ్రాములు లీటరు నీటికి కలిపి పిచికారీ చేయాలి.\n2. లేదా కార్టాప్ హైడ్రోక్లోరైడ్ 4G గుళికలు ఎకరాకు 8 కిలోలు లేదా ఫెర్టెర్రా 4 కిలోలు చల్లాలి.",
+        cure_bio_te: "1. ఎకరాకు 8 లింగాకర్షక బుట్టలు (ఫెరమోన్ ట్రాప్స్) అమర్చాలి.\n2. ట్రైకోగ్రామా జపోనికమ్ పరాన్నజీవుల కార్డులను ఎకరాకు 20,000 చొప్పున విడుదల చేయాలి.",
+        cure_cult_te: "నాట్లు వేసేటప్పుడు మొక్కల కొనలను తుంచి వేయాలి (పురుగు గుడ్లు నాశనమవుతాయి). పొలంలో తగినంత నీటి మట్టాన్ని నిర్వహించాలి."
+      },
+      downy_mildew: {
+        name_en: "Downy Mildew",
+        name_te: "బూడిద తెగులు / ఆకు ముడత (Downy Mildew)",
+        sci: "Sclerophthora macrospora",
+        why_te: "నారుమడులలో లేదా పొలంలో ఎక్కువ రోజులు మురుగునీరు నిల్వ ఉండటం మరియు చల్లని వాతావరణం వల్ల ఆకులు పసుపు రంగులోకి మారి ముడుచుకుపోతాయి.",
+        cure_chem_te: "మెటలాక్సిల్ 8% + మాంకోజెబ్ 64% WP (రిడోమిల్ MZ) @ 2.5 గ్రాములు లీటరు నీటికి కలిపి పిచికారీ చేయాలి.",
+        cure_bio_te: "ట్రైకోడెర్మాతో నారు వేళ్ళను శుద్ధి చేసి నాటుకోవాలి.",
+        cure_cult_te: "పొలంలో మురుగునీటి పారుదల వసతి కల్పించాలి. నీరు నిల్వ ఉండకుండా చూసుకోవాలి."
+      },
+      hispa: {
+        name_en: "Rice Hispa",
+        name_te: "వరి హిస్పా / ఎర్ర ఈగ (Rice Hispa)",
+        sci: "Dicladispa armigera",
+        why_te: "ముళ్ళ వంటి ఈగలు మరియు వాటి పిల్లలు ఆకులలోని పత్రహరితాన్ని గీకి తినడం వల్ల ఆకులపై తెల్లటి పొడవాటి చారలు ఏర్పడి పైరు ఎండిపోయినట్లు కనిపిస్తుంది.",
+        cure_chem_te: "క్లోరిపైరిఫాస్ 20% EC @ 2.5 మి.లీ లేదా ఎసిఫేట్ 75% SP @ 1.5 గ్రాములు లీటరు నీటికి కలిపి పిచికారీ చేయాలి.",
+        cure_bio_te: "వేప గింజల కషాయం (NSKE 5%) లేదా వేప నూనె పిచికారీ చేయాలి.",
+        cure_cult_te: "నాట్లు వేసే ముందు నారు చివర్లను తుంచి వేయాలి. తాడుతో పైరును రాపిడి చేసి పురుగులను కింద పడేలా చేసి నీటి ద్వారా బయటకు పంపవచ్చు."
+      },
+      normal: {
+        name_en: "Healthy Paddy Crop",
+        name_te: "ఆరోగ్యకరమైన పైరు (Healthy Paddy)",
+        sci: "Oryza sativa (Optimal Vigor)",
+        why_te: "మొక్కలకు ఎటువంటి తెగులు లేదా పురుగు లక్షణాలు లేవు. తగిన పోషకాలు మరియు అనుకూల వాతావరణం వల్ల పైరు ఆరోగ్యకరంగా పెరుగుతోంది.",
+        cure_chem_te: "ఎటువంటి రసాయన మందులు పిచికారీ చేయవలసిన అవసరం లేదు.",
+        cure_bio_te: "రోగనిరోధక శక్తిని కాపాడుకోవడానికి సూడోమోనాస్ లేదా జీవామృతం ఉపయోగించవచ్చు.",
+        cure_cult_te: "సిఫారసు చేసిన సమగ్ర ఎరువుల మరియు నీటి యాజమాన్య పద్ధతులను కొనసాగించండి."
+      },
+      tungro: {
+        name_en: "Rice Tungro Virus",
+        name_te: "వరి టుంగ్రో వైరస్ తెగులు (Rice Tungro Virus)",
+        sci: "Rice tungro bacilliform virus (RTBV)",
+        why_te: "పచ్చ దీపపు పురుగులు (Green Leafhopper) వైరస్‌ను వ్యాపింపజేయడం వల్ల ఆకులు పసుపు-నారింజ రంగులోకి మారి మొక్కలు గిడసబారిపోతాయి.",
+        cure_chem_te: "దీపపు పురుగుల నివారణకు థయామెథోక్సామ్ 25% WG @ 0.2 గ్రా లేదా ఇమిడాక్లోప్రిడ్ 17.8% SL @ 0.3 మి.లీ లీటరు నీటికి కలిపి పిచికారీ చేయాలి.",
+        cure_bio_te: "పొలంలో పసుపు రంగు జిగురు అట్టలను (Yellow sticky traps) అమర్చాలి.",
+        cure_cult_te: "తీవ్రంగా సోకిన మొక్కలను పీకి నాశనం చేయాలి. గట్లపై కలుపు మొక్కలను తొలగించాలి."
+      }
+    };
+
+    // Phenological Stage Calculator
     function getStageName(age) {
-      if (age < 50) return "Tillering Stage (Vegetative Phase)";
-      if (age < 62) return "Panicle Initiation Stage (Reproductive Phase)";
-      if (age < 72) return "Flowering / Heading Stage";
-      if (age < 78) return "Grain Filling Stage (Ripening Phase)";
-      return "Late Ripening & Maturity Stage";
+      if (currentLang === 'te') {
+        if (age < 50) return "పిలకల దశ (శాఖీయ వృద్ధి దశ)";
+        if (age < 62) return "చిరుపొట్ట దశ (పునరుత్పత్తి దశ)";
+        if (age < 72) return "వెన్ను విరిచే / పూత దశ";
+        if (age < 78) return "పాలు పోసుకునే గింజ దశ";
+        return "కోతకు సిద్ధమైన పరిపక్వ దశ";
+      } else {
+        if (age < 50) return "Tillering Stage (Vegetative Phase)";
+        if (age < 62) return "Panicle Initiation Stage (Reproductive Phase)";
+        if (age < 72) return "Flowering / Heading Stage";
+        if (age < 78) return "Grain Filling Stage (Ripening Phase)";
+        return "Late Ripening & Maturity Stage";
+      }
     }
 
     function updateAge(val) {
-      document.getElementById("age-display").innerText = val + " days";
-      document.getElementById("stage-text").innerText = "Phenological Phase: " + getStageName(parseInt(val));
+      document.getElementById("age-display").innerText = val + (currentLang === 'te' ? " రోజులు" : " days");
+      const prefix = currentLang === 'te' ? "పైరు పెరుగుదల దశ: " : "Phenological Phase: ";
+      document.getElementById("stage-text").innerText = prefix + getStageName(parseInt(val));
     }
 
-    // Drag and Drop
+    // Language Toggle Function
+    function toggleLanguage() {
+      currentLang = (currentLang === 'en') ? 'te' : 'en';
+      const t = I18N[currentLang];
+
+      // Update UI Text Elements
+      document.getElementById("lbl-brand-title").innerText = t.brandTitle;
+      document.getElementById("lbl-brand-subtitle").innerText = t.brandSubtitle;
+      document.getElementById("lbl-model-badge").innerText = t.modelBadge;
+      document.getElementById("lang-btn-text").innerText = t.langBtn;
+      document.getElementById("lbl-card-input-title").innerText = t.cardInputTitle;
+      document.getElementById("lbl-upload-text").innerText = t.uploadText;
+      document.getElementById("lbl-upload-hint").innerText = t.uploadHint;
+      document.getElementById("lbl-camera-btn").innerText = t.cameraBtn;
+      document.getElementById("lbl-browse-btn").innerText = t.browseBtn;
+      document.getElementById("lbl-presets").innerText = t.presets;
+      document.getElementById("lbl-variety").innerText = t.variety;
+      document.getElementById("lbl-crop-age").innerText = t.cropAge;
+      document.getElementById("lbl-coords-title").innerText = t.coordsTitle;
+      document.getElementById("lbl-gps-btn").innerText = t.gpsBtn;
+      document.getElementById("lbl-quick-districts").innerText = t.quickDistricts;
+      document.getElementById("lbl-lat").innerText = t.lat;
+      document.getElementById("lbl-lon").innerText = t.lon;
+      document.getElementById("btn-text").innerText = t.submitBtn;
+      document.getElementById("lbl-card-results-title").innerText = t.cardResultsTitle;
+      document.getElementById("lbl-placeholder-title").innerText = t.placeholderTitle;
+      document.getElementById("lbl-placeholder-sub").innerText = t.placeholderSub;
+      document.getElementById("lbl-print-btn").innerText = t.printBtn;
+      document.getElementById("lbl-whatsapp-btn").innerText = t.whatsappBtn;
+      document.getElementById("lbl-identified-pathology").innerText = t.identifiedPathology;
+      document.getElementById("lbl-field-risk").innerText = t.fieldRisk;
+      document.getElementById("lbl-conf-title").innerText = t.confTitle;
+      document.getElementById("lbl-why-occurred-title").innerText = t.whyOccurredTitle;
+      document.getElementById("lbl-protocol-title").innerText = t.protocolTitle;
+      document.getElementById("lbl-cure-chemical-title").innerText = t.cureChemicalTitle;
+      document.getElementById("lbl-cure-bio-title").innerText = t.cureBioTitle;
+      document.getElementById("lbl-cure-cult-title").innerText = t.cureCultTitle;
+      document.getElementById("lbl-weather-title").innerText = t.weatherTitle;
+      document.getElementById("lbl-top3-title").innerText = t.top3Title;
+      document.getElementById("lbl-temp").innerText = t.temp;
+      document.getElementById("lbl-humidity").innerText = t.humidity;
+      document.getElementById("lbl-vpd").innerText = t.vpd;
+      document.getElementById("lbl-blast-risk").innerText = t.blastRisk;
+      document.getElementById("lbl-blight-risk").innerText = t.blightRisk;
+      document.getElementById("lbl-panicle-risk").innerText = t.panicleRisk;
+      document.getElementById("lbl-gradcam-title").innerText = t.gradcamTitle;
+      document.getElementById("lbl-gradcam-desc").innerText = t.gradcamDesc;
+
+      // Update age slider label
+      updateAge(document.getElementById("age-slider").value);
+
+      // Re-render diagnosis if already loaded
+      if (lastResultData) {
+        renderResults(lastResultData);
+      }
+    }
+
+    // Direct Camera Handling
+    function triggerCamera(e) {
+      if (e) e.stopPropagation();
+      document.getElementById("camera-input").click();
+    }
+
+    document.getElementById("camera-input").addEventListener("change", (e) => {
+      if (e.target.files.length) {
+        handleFileSelect(e.target.files[0]);
+      }
+    });
+
+    // Drag and Drop & Standard File Input
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
 
@@ -708,17 +1372,17 @@
       if (e) e.stopPropagation();
       activeFile = null;
       fileInput.value = "";
+      document.getElementById("camera-input").value = "";
       document.getElementById("preview-box").style.display = "none";
       document.getElementById("drop-zone").style.display = "block";
     }
 
-    // Sample Loader
+    // Preset Sample Loader
     async function loadSample(disease, variety, age) {
       document.getElementById("variety-select").value = variety;
       document.getElementById("age-slider").value = age;
       updateAge(age);
 
-      // Create a canvas-drawn authentic visual representation of disease sample
       const canvas = document.createElement("canvas");
       canvas.width = 480;
       canvas.height = 640;
@@ -738,7 +1402,7 @@
       ctx.fillStyle = grad;
       ctx.fill();
 
-      // Draw characteristic lesion symptoms
+      // Characteristic lesions
       if (disease === "blast") {
         ctx.fillStyle = "#a87140";
         for (let i = 0; i < 7; i++) {
@@ -762,10 +1426,42 @@
       }, "image/jpeg");
     }
 
+    // GPS and Coordinate Handlers
+    function detectGPSLocation() {
+      const hint = document.getElementById("location-hint");
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
+      }
+      hint.innerText = currentLang === 'te' ? "GPS ఉపగ్రహ స్థానాన్ని గుర్తిస్తోంది..." : "Querying device GPS satellite position...";
+      hint.style.color = "#38bdf8";
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          document.getElementById("lat-input").value = pos.coords.latitude.toFixed(4);
+          document.getElementById("lon-input").value = pos.coords.longitude.toFixed(4);
+          hint.innerText = (currentLang === 'te' ? "GPS లొకేషన్ గుర్తించబడింది: " : "GPS Acquired: ") + `${pos.coords.latitude.toFixed(4)}°N, ${pos.coords.longitude.toFixed(4)}°E (Live)`;
+          hint.style.color = "#34d399";
+        },
+        (err) => {
+          alert("Could not retrieve GPS coordinates: " + err.message + ". Keeping selected coordinates.");
+          hint.innerText = currentLang === 'te' ? "లొకేషన్ అనుమతి నిరాకరించబడింది. తెలంగాణ డిఫాల్ట్ లొకేషన్ వాడుతున్నాము." : "Location access denied. Using Telangana coordinates (17.3850, 78.4867).";
+          hint.style.color = "#f87171";
+        }
+      );
+    }
+
+    function setCoords(lat, lon, name) {
+      document.getElementById("lat-input").value = lat.toFixed(4);
+      document.getElementById("lon-input").value = lon.toFixed(4);
+      const hint = document.getElementById("location-hint");
+      hint.innerText = `${name} (${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E)`;
+      hint.style.color = "#38bdf8";
+    }
+
     // Run Diagnosis
     async function runDiagnosis() {
       if (!activeFile) {
-        alert("Please upload a leaf photograph first or choose one of the preset sample buttons.");
+        alert(currentLang === 'te' ? "దయచేసి ముందుగా ఆకు ఫోటోను అప్‌లోడ్ చేయండి లేదా కెమెరాతో తీయండి." : "Please upload a leaf photograph first or choose one of the preset sample buttons.");
         return;
       }
 
@@ -775,34 +1471,60 @@
 
       submitBtn.disabled = true;
       btnSpinner.style.display = "inline-block";
-      btnText.innerText = "Analyzing Symptoms...";
+      btnText.innerText = I18N[currentLang].submittingText;
 
       const variety = document.getElementById("variety-select").value;
       const age = document.getElementById("age-slider").value;
+      const lat = document.getElementById("lat-input").value;
+      const lon = document.getElementById("lon-input").value;
 
       const formData = new FormData();
       formData.append("image", activeFile);
       formData.append("variety", variety);
       formData.append("age", age);
+      if (lat) formData.append("lat", lat);
+      if (lon) formData.append("lon", lon);
+
+      const apiEndpoint = (window.location.port === "8000")
+        ? "/predict"
+        : "http://127.0.0.1:8000/predict";
 
       try {
-        const res = await fetch("/predict", {
-          method: "POST",
-          body: formData
-        });
+        let res;
+        try {
+          res = await fetch(apiEndpoint, {
+            method: "POST",
+            body: formData
+          });
+        } catch (netErr) {
+          if (apiEndpoint !== "/predict") {
+            try {
+              res = await fetch("/predict", {
+                method: "POST",
+                body: formData
+              });
+            } catch (proxyErr) {
+              throw new Error("Cannot connect to backend server at http://127.0.0.1:8000. Please ensure the Python API server is running (`python -m uvicorn api.main:app --port 8000`).");
+            }
+          } else {
+            throw new Error("Cannot connect to backend server. Please ensure the Python API server is running on port 8000.");
+          }
+        }
 
         if (!res.ok) {
-          throw new Error("Prediction API failed with status " + res.status);
+          const errDetail = await res.text();
+          throw new Error("Prediction API failed with status " + res.status + " (" + errDetail + ")");
         }
 
         const data = await res.json();
+        lastResultData = data;
         renderResults(data);
       } catch (err) {
         alert("Error running inference: " + err.message);
       } finally {
         submitBtn.disabled = false;
         btnSpinner.style.display = "none";
-        btnText.innerText = "Run Multimodal Diagnosis";
+        btnText.innerText = I18N[currentLang].submitBtn;
       }
     }
 
@@ -811,31 +1533,208 @@
       const resultsBox = document.getElementById("results-box");
       resultsBox.style.display = "block";
 
+      const rawDisease = data.predicted_disease.toLowerCase();
+      const diseaseMeta = DISEASE_I18N[rawDisease] || {};
+
+      // Name & Scientific
       const nameEl = document.getElementById("diag-disease-name");
-      const cleanName = data.predicted_disease.replace(/_/g, " ");
-      nameEl.innerText = cleanName;
+      if (currentLang === 'te' && diseaseMeta.name_te) {
+        nameEl.innerText = diseaseMeta.name_te;
+      } else {
+        nameEl.innerText = diseaseMeta.name_en || data.predicted_disease.replace(/_/g, " ");
+      }
       nameEl.className = "diag-disease" + (data.is_healthy ? " healthy" : "");
 
+      const report = data.detailed_report || {};
+      document.getElementById("diag-scientific-name").innerText = diseaseMeta.sci || report.scientific_name || "";
+
+      // Confidence
       const pct = (data.confidence * 100).toFixed(1) + "%";
       document.getElementById("conf-fill").style.width = pct;
       document.getElementById("conf-text").innerText = pct;
 
-      // Top 3
+      // Risk Badge
+      const riskBadge = document.getElementById("risk-badge");
+      if (report.risk_category) {
+        const riskCategoryTranslated = (currentLang === 'te')
+          ? (report.risk_category === "CRITICAL" ? "తీవ్ర ప్రమాదం" : (report.risk_category === "HIGH" ? "అధిక ప్రమాదం" : (report.risk_category === "MODERATE" ? "మధ్యస్థం" : "తక్కువ")))
+          : report.risk_category;
+        riskBadge.innerText = `${riskCategoryTranslated} (${report.risk_percentage}%)`;
+        riskBadge.style.color = report.risk_color || "#f87171";
+        riskBadge.style.borderColor = report.risk_color || "#f87171";
+      }
+
+      // "Why Did This Disease Occur?" Causal Explanation
+      const whyEl = document.getElementById("why-occurred-text");
+      if (currentLang === 'te' && diseaseMeta.why_te) {
+        whyEl.innerText = diseaseMeta.why_te;
+      } else {
+        whyEl.innerText = report.why_it_occurred || "Causal analysis synthesized from weather and plant factors.";
+      }
+
+      // Step-by-Step Prevention & Cure Protocol
+      const action = report.action_plan || {};
+      const chemEl = document.getElementById("cure-chemical");
+      const bioEl = document.getElementById("cure-biological");
+      const cultEl = document.getElementById("cure-cultural");
+
+      if (currentLang === 'te' && diseaseMeta.cure_chem_te) {
+        chemEl.innerText = diseaseMeta.cure_chem_te;
+        bioEl.innerText = diseaseMeta.cure_bio_te;
+        cultEl.innerText = diseaseMeta.cure_cult_te;
+      } else {
+        chemEl.innerText = action.chemical_cure || "Standard recommended treatment.";
+        bioEl.innerText = action.biological_control || "Standard biological control.";
+        cultEl.innerText = action.cultural_prevention || "Standard cultural practices.";
+      }
+
+      // Top 3 Differential Diagnoses
       const top3Container = document.getElementById("top3-container");
       top3Container.innerHTML = "";
-      data.top_3_predictions.forEach(p => {
+      (data.top_3_predictions || []).forEach(p => {
         const row = document.createElement("div");
-        row.className = "top3-row";
+        row.style.cssText = "display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; background: rgba(255, 255, 255, 0.02); border-radius: 8px; margin-bottom: 6px; border: 1px solid rgba(255, 255, 255, 0.04);";
+        const pKey = p.disease.toLowerCase();
+        const pName = (currentLang === 'te' && DISEASE_I18N[pKey])
+          ? DISEASE_I18N[pKey].name_te
+          : (DISEASE_I18N[pKey]?.name_en || p.disease.replace(/_/g, " "));
+
         row.innerHTML = `
-          <span class="top3-name">${p.disease.replace(/_/g, " ")}</span>
-          <span class="top3-prob">${(p.confidence * 100).toFixed(1)}%</span>
+          <span style="font-size: 13px; font-weight: 600; text-transform: capitalize;">${pName}</span>
+          <span style="font-family: monospace; font-size: 13px; color: var(--text-muted); font-weight: 600;">${(p.confidence * 100).toFixed(1)}%</span>
         `;
         top3Container.appendChild(row);
       });
 
-      document.getElementById("advisory-text").innerText = data.advisory_recommendation;
       document.getElementById("meta-used-text").innerText = data.modality_used;
-      document.getElementById("variety-age-echo").innerText = `${data.variety} • ${data.crop_age_days} days`;
+      document.getElementById("variety-age-echo").innerText = `${data.variety} • ${data.crop_age_days} ${currentLang === 'te' ? 'రోజులు' : 'days'}`;
+
+      // Live Open-Meteo Weather
+      if (data.environment_context && data.environment_context.status === "available") {
+        const env = data.environment_context;
+        const loc = data.location_context || {};
+        const locString = `${loc.city || "Field Location"}, ${loc.region || "Telangana"} (${env.latitude}°N, ${env.longitude}°E)`;
+        document.getElementById("weather-location").innerText = locString;
+        document.getElementById("weather-temp").innerText = (env.temperature !== undefined ? env.temperature : "—") + "°C";
+        document.getElementById("weather-humidity").innerText = (env.humidity !== undefined ? env.humidity : "—") + "%";
+        document.getElementById("weather-vpd").innerText = (env.vpd !== undefined ? env.vpd : "1.2") + " kPa";
+
+        const risk = env.epidemiological_risk || {};
+        const blastEl = document.getElementById("risk-blast");
+        const blightEl = document.getElementById("risk-blight");
+        const panicleEl = document.getElementById("risk-panicle");
+
+        blastEl.innerText = risk.blast_risk || "Low";
+        blastEl.style.color = (risk.blast_risk === "High") ? "#f87171" : (risk.blast_risk === "Moderate" ? "#fbbf24" : "#34d399");
+
+        blightEl.innerText = risk.bacterial_blight_risk || "Low";
+        blightEl.style.color = (risk.bacterial_blight_risk === "High") ? "#f87171" : (risk.bacterial_blight_risk === "Moderate" ? "#fbbf24" : "#34d399");
+
+        panicleEl.innerText = risk.panicle_blight_risk || "Moderate";
+        panicleEl.style.color = (risk.panicle_blight_risk && risk.panicle_blight_risk.includes("High")) ? "#f87171" : "#fbbf24";
+
+        // Print header metadata update
+        document.getElementById("print-location").innerText = locString;
+      }
+
+      // Populate Print Slip Fields
+      const prescId = "TS-RICE-" + Math.floor(100000 + Math.random() * 900000);
+      document.getElementById("print-presc-id").innerText = prescId;
+      document.getElementById("print-date").innerText = new Date().toLocaleString();
+      document.getElementById("print-variety").innerText = `${data.variety} (${data.crop_age_days} days)`;
+      document.getElementById("print-age").innerText = getStageName(parseInt(data.crop_age_days));
+
+      // Grad-CAM Explainability Heatmap
+      if (data.explainability && data.explainability.status === "available" && data.explainability.overlay_b64) {
+        const gradCard = document.getElementById("gradcam-card");
+        const gradImg = document.getElementById("gradcam-img");
+        gradImg.src = data.explainability.overlay_b64;
+        gradCard.style.display = "block";
+      }
+    }
+
+    // ==============================================================
+    // ONE-CLICK PRINTABLE / PDF REPORT & WHATSAPP SHARE
+    // ==============================================================
+
+    function printReport() {
+      if (!lastResultData) {
+        alert(currentLang === 'te' ? "ముందుగా రోగ నిర్ధారణ పరీక్షను నిర్వహించండి." : "Please run diagnosis first before printing the prescription.");
+        return;
+      }
+      window.print();
+    }
+
+    function shareWhatsApp() {
+      if (!lastResultData) {
+        alert(currentLang === 'te' ? "ముందుగా రోగ నిర్ధారణ పరీక్షను నిర్వహించండి." : "Please run diagnosis first before sharing on WhatsApp.");
+        return;
+      }
+
+      const d = lastResultData;
+      const rawDisease = d.predicted_disease.toLowerCase();
+      const meta = DISEASE_I18N[rawDisease] || {};
+      const report = d.detailed_report || {};
+      const action = report.action_plan || {};
+      const env = d.environment_context || {};
+      const loc = d.location_context || {};
+
+      const diseaseName = (currentLang === 'te' && meta.name_te) ? meta.name_te : (meta.name_en || d.predicted_disease);
+      const conf = (d.confidence * 100).toFixed(1);
+      const risk = report.risk_category || "HIGH";
+      const temp = env.temperature !== undefined ? `${env.temperature}°C` : "N/A";
+      const rh = env.humidity !== undefined ? `${env.humidity}%` : "N/A";
+      const vpd = env.vpd !== undefined ? `${env.vpd} kPa` : "N/A";
+      const location = `${loc.city || 'Telangana'} (${d.input_context?.latitude || '17.38'}°N, ${d.input_context?.longitude || '78.48'}°E)`;
+      const why = (currentLang === 'te' && meta.why_te) ? meta.why_te : (report.why_it_occurred || "");
+      const chem = (currentLang === 'te' && meta.cure_chem_te) ? meta.cure_chem_te : (action.chemical_cure || "");
+      const bio = (currentLang === 'te' && meta.cure_bio_te) ? meta.cure_bio_te : (action.biological_control || "");
+
+      let msg = "";
+      if (currentLang === 'te') {
+        msg = 
+`🌾 *వరి రోగ నిర్ధారణ ప్రిస్క్రిప్షన్ నివేదిక (Paddy Doctor AI)*
+--------------------------------------------------
+🔬 *గుర్తించిన తెగులు:* ${diseaseName}
+📊 *ఖచ్చితత్వం:* ${conf}% | *ప్రమాద తీవ్రత:* ${risk} (${report.risk_percentage || 85}%)
+🌱 *వరి రకం:* ${d.variety} | *నాటిన రోజులు:* ${d.crop_age_days}
+📍 *పొలం లొకేషన్:* ${location}
+🌤️ *ప్రత్యక్ష వాతావరణం:* ఉష్ణోగ్రత ${temp} | తేమ ${rh} | VPD: ${vpd}
+
+❓ *ఈ తెగులు ఎందుకు వచ్చింది?*
+${why.substring(0, 300)}...
+
+💊 *సిఫారసు చేసిన రసాయన చికిత్స:*
+${chem}
+
+🌿 *సేంద్రీయ & నివారణ చర్యలు:*
+${bio}
+--------------------------------------------------
+తెలంగాణ డిజిటల్ వ్యవసాయ సలహా కేంద్రం • Paddy Doctor AI`;
+      } else {
+        msg = 
+`🌾 *PADDY DOCTOR AI - PHYTOSANITARY PRESCRIPTION REPORT*
+--------------------------------------------------
+🔬 *Diagnosed Disease:* ${diseaseName}
+📊 *Confidence:* ${conf}% | *Field Risk:* ${risk} (${report.risk_percentage || 85}%)
+🌱 *Cultivar:* ${d.variety} | *Crop Age:* ${d.crop_age_days} days
+📍 *Field Location:* ${location}
+🌤️ *Live Microclimate:* ${temp} | RH: ${rh} | VPD: ${vpd}
+
+❓ *Why It Occurred:*
+${why.substring(0, 300)}...
+
+💊 *Immediate Chemical Cure:*
+${chem}
+
+🌿 *Biological / Cultural Measures:*
+${bio}
+--------------------------------------------------
+Telangana Digital Agriculture Advisory • Paddy Doctor AI`;
+      }
+
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(whatsappUrl, '_blank');
     }
   </script>
 </body>

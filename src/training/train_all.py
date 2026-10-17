@@ -61,7 +61,10 @@ def run_experiment(
     config: dict,
     class_weights: Optional[torch.Tensor] = None,
     checkpoint_dir: str = "models/checkpoints",
-    final_model_name: Optional[str] = None
+    final_model_name: Optional[str] = None,
+    optimizer_override: Optional[torch.optim.Optimizer] = None,
+    scheduler_override: Optional[Any] = None,
+    unfreeze_backbone_after: Optional[int] = None
 ) -> Dict[str, Any]:
     """Train, validate, checkpoint, and evaluate a model configuration."""
     print(f"\n{'='*70}")
@@ -69,17 +72,25 @@ def run_experiment(
     print(f"{'='*70}")
 
     criterion = nn.CrossEntropyLoss(weight=class_weights)
-    optimizer = torch.optim.AdamW(
-        model.parameters(),
-        lr=config["training"]["learning_rate"],
-        weight_decay=config["training"]["weight_decay"]
-    )
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer,
-        mode="max",
-        patience=config["training"]["lr_patience"],
-        factor=config["training"]["lr_factor"]
-    )
+
+    if optimizer_override is not None:
+        optimizer = optimizer_override
+    else:
+        optimizer = torch.optim.AdamW(
+            model.parameters(),
+            lr=config["training"]["learning_rate"],
+            weight_decay=config["training"]["weight_decay"]
+        )
+
+    if scheduler_override is not None:
+        scheduler = scheduler_override
+    else:
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer,
+            mode="max",
+            patience=config["training"]["lr_patience"],
+            factor=config["training"]["lr_factor"]
+        )
 
     trainer = ModelTrainer(
         model=model,
@@ -92,7 +103,8 @@ def run_experiment(
         checkpoint_dir=checkpoint_dir,
         model_name=exp_name,
         early_stopping_patience=config["training"]["early_stopping_patience"],
-        lr_scheduler=scheduler
+        lr_scheduler=scheduler,
+        unfreeze_backbone_after=unfreeze_backbone_after
     )
 
     # Train
@@ -286,6 +298,8 @@ def main(config_path: str = "configs/config.yaml", target_exp: str = "all", epoc
 
     # =========================================================================
     # EXPERIMENT C: Multimodal Fusion (ResNet18 + Variety + Age)
+    #   Strategy: Warm-start image encoder from Exp A, differential LR,
+    #   and gradual unfreezing to preserve pretrained visual features.
     # =========================================================================
     if target_exp in ["c", "multimodal", "all"]:
         model_multi = MultimodalCropNet(
@@ -299,6 +313,62 @@ def main(config_path: str = "configs/config.yaml", target_exp: str = "all", epoc
             fusion_hidden_dim=config["models"]["fusion_hidden_dim"],
             dropout=config["models"]["dropout"]
         )
+
+        # --- WARM-START: Load trained image-only backbone into multimodal encoder ---
+        img_ckpt_path = Path(config["paths"]["checkpoint_dir"]) / "image_only_best.pt"
+        if img_ckpt_path.exists():
+            img_ckpt = torch.load(img_ckpt_path, map_location=device, weights_only=False)
+            img_state = img_ckpt["model_state_dict"]
+            # Map image-only keys to multimodal image_encoder keys
+            encoder_state = {}
+            for key, val in img_state.items():
+                if not key.startswith("classifier."):  # Skip the old classification head
+                    encoder_state[key] = val
+            missing, unexpected = model_multi.image_encoder.load_state_dict(encoder_state, strict=False)
+            print(f"\n[WARM-START] Loaded image-only backbone into multimodal image encoder")
+            print(f"  Source checkpoint: {img_ckpt_path}")
+            print(f"  Source epoch: {img_ckpt.get('epoch', '?')}, Val F1: {img_ckpt.get('val_macro_f1', '?')}")
+            if missing:
+                print(f"  Missing keys (expected for classifier head): {missing}")
+            if unexpected:
+                print(f"  Unexpected keys: {unexpected}")
+        else:
+            print(f"\n[WARM-START] WARNING: Image-only checkpoint not found at {img_ckpt_path}.")
+            print(f"  Falling back to ImageNet-pretrained weights only.")
+            print(f"  For best results, run Experiment A (image_only) first.")
+
+        # --- FREEZE backbone initially ---
+        unfreeze_after = 5  # Freeze ResNet backbone for first 5 epochs
+        for param in model_multi.image_encoder.parameters():
+            param.requires_grad = False
+        print(f"[FREEZE] ResNet18 backbone frozen for first {unfreeze_after} epochs")
+
+        # --- DIFFERENTIAL LEARNING RATES ---
+        backbone_lr = config["training"]["learning_rate"] * 0.033  # ~1e-5 if base LR=3e-4
+        fusion_lr = config["training"]["learning_rate"]  # 3e-4
+
+        # Group parameters: backbone (frozen initially) vs fusion head + tabular
+        backbone_params = list(model_multi.image_encoder.parameters())
+        backbone_param_ids = set(id(p) for p in backbone_params)
+        fusion_params = [p for p in model_multi.parameters() if id(p) not in backbone_param_ids and p.requires_grad]
+
+        multi_optimizer = torch.optim.AdamW([
+            {"params": backbone_params, "lr": backbone_lr},
+            {"params": fusion_params, "lr": fusion_lr}
+        ], weight_decay=config["training"]["weight_decay"])
+
+        multi_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            multi_optimizer,
+            mode="max",
+            patience=config["training"]["lr_patience"],
+            factor=config["training"]["lr_factor"]
+        )
+
+        print(f"[DIFF-LR] Backbone LR: {backbone_lr:.6f}, Fusion LR: {fusion_lr:.6f}")
+
+        # Use more epochs for multimodal convergence
+        multi_epochs = max(config["training"]["num_epochs"], 25)
+
         res_c = run_experiment(
             exp_name="multimodal",
             model=model_multi,
@@ -308,9 +378,12 @@ def main(config_path: str = "configs/config.yaml", target_exp: str = "all", epoc
             test_loader=test_loader_multi,
             class_names=class_names,
             device=device,
-            config=config,
+            config={**config, "training": {**config["training"], "num_epochs": multi_epochs, "early_stopping_patience": 6}},
             class_weights=class_weights,
-            final_model_name="multimodal_best"
+            final_model_name="multimodal_best",
+            optimizer_override=multi_optimizer,
+            scheduler_override=multi_scheduler,
+            unfreeze_backbone_after=unfreeze_after
         )
         results["Multimodal"] = res_c
 

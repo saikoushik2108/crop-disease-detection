@@ -42,8 +42,27 @@ class InferenceEngine:
         self.gradcam = GradCAM(self.model, self.model.image_encoder.layer4)
 
     def _load_model(self, path: str) -> MultimodalCropNet:
-        model = MultimodalCropNet()
-        model.load_state_dict(torch.load(path, map_location=self.device))
+        model_cfg_path = Path("models/model_config.json")
+        if model_cfg_path.exists():
+            with open(model_cfg_path, 'r') as f:
+                cfg = json.load(f)
+            model = MultimodalCropNet(
+                num_classes=cfg.get("num_classes", 10),
+                num_varieties=cfg.get("num_varieties", 11),
+                num_continuous=cfg.get("num_continuous", 1),
+                variety_embedding_dim=cfg.get("variety_embedding_dim", 16),
+                continuous_proj_dim=cfg.get("continuous_feature_dim", 16),
+                tabular_embedding_dim=cfg.get("tabular_embedding_dim", 64),
+                fusion_hidden_dim=cfg.get("fusion_hidden_dim", 128),
+                dropout=cfg.get("dropout", 0.3),
+                pretrained=False
+            )
+        else:
+            model = MultimodalCropNet(num_varieties=11, num_continuous=1, pretrained=False)
+
+        ckpt = torch.load(path, map_location=self.device, weights_only=False)
+        state_dict = ckpt.get("model_state_dict", ckpt)
+        model.load_state_dict(state_dict)
         model.to(self.device)
         model.eval()
         return model
@@ -52,15 +71,37 @@ class InferenceEngine:
         with open(path, 'r') as f:
             return json.load(f)
 
-    def preprocess_tabular(self, variety: str, age: int) -> torch.Tensor:
-        var_map = self.preprocessor.get("variety_mapping", {})
-        var_idx = var_map.get(variety, 0)
+    def preprocess_tabular(self, variety: str, age: int) -> Tuple[torch.Tensor, torch.Tensor]:
+        var_map = self.preprocessor.get("variety_to_idx", self.preprocessor.get("variety_mapping", {}))
+        # Clean and alias variety name (including Telangana varieties)
+        TELANGANA_VARIETY_ALIASES = {
+            "BPT5204": "AndraPonni",
+            "BPT 5204": "AndraPonni",
+            "SambaMahsuri": "AndraPonni",
+            "Samba Mahsuri": "AndraPonni",
+            "TelanganaSona": "<unk>",
+            "Telangana Sona": "<unk>",
+            "RNR15048": "<unk>",
+            "RNR 15048": "<unk>",
+            "KNM118": "<unk>",
+            "KNM 118": "<unk>",
+            "MTU1010": "<unk>",
+            "MTU 1010": "<unk>",
+            "JGL18047": "<unk>",
+            "JGL 18047": "<unk>",
+            "IR64": "IR20",
+            "IR 64": "IR20",
+        }
+        clean_var = variety.strip()
+        mapped_var = TELANGANA_VARIETY_ALIASES.get(clean_var, clean_var)
+        var_idx = var_map.get(mapped_var, var_map.get("<unk>", 0))
 
-        age_mean = self.preprocessor.get("age_mean", 0)
-        age_std = self.preprocessor.get("age_std", 1)
-        norm_age = (age - age_mean) / (age_std + 1e-6)
+        scaler = self.preprocessor.get("scaler_params", {}).get("age", {})
+        age_mean = scaler.get("mean", self.preprocessor.get("age_mean", 64.02))
+        age_std = scaler.get("std", self.preprocessor.get("age_std", 8.97))
+        norm_age = (float(age) - age_mean) / (age_std + 1e-6)
 
-        return torch.tensor([[var_idx]], dtype=torch.long).to(self.device), \
+        return torch.tensor([var_idx], dtype=torch.long).to(self.device), \
                torch.tensor([[norm_age]], dtype=torch.float).to(self.device)
 
     def _generate_explainability_data(self, img: Image.Image, img_tensor: torch.Tensor, var_tensor: torch.Tensor, age_tensor: torch.Tensor) -> Dict[str, str]:
@@ -118,26 +159,18 @@ class InferenceEngine:
                 "confidence": float(top_probs[i].item())
             })
 
-        # 2. Runtime Context (External APIs)
-        location_context = {}
-        environment_context = {}
+        # 2. Runtime Context (Open-Meteo & Nominatim)
+        full_context = self.context_engine.get_full_context(lat, lon)
+        location_context = full_context.get("location", {})
+        environment_context = full_context.get("environment", {})
+
         context_status = {
             "image": "available",
             "variety": "available",
             "age": "available",
-            "location": "unavailable",
-            "weather": "unavailable"
+            "location": location_context.get("status", "unavailable"),
+            "weather": environment_context.get("status", "unavailable")
         }
-
-        if lat is not None and lon is not None:
-            full_context = self.context_engine.get_full_context(lat, lon)
-            location_context = full_context.get("location", {})
-            environment_context = full_context.get("environment", {})
-
-            if location_context.get("status") == "available":
-                context_status["location"] = "available"
-            if environment_context.get("status") == "available":
-                context_status["weather"] = "available"
 
         # 3. Explainability (Grad-CAM)
         # We need to switch to train mode briefly to get gradients, then back to eval
@@ -162,6 +195,12 @@ class InferenceEngine:
         try:
             with open("models/class_mapping.json", 'r') as f:
                 mapping = json.load(f)
-                return {int(k): v for k, v in mapping.items()}
+                result = {}
+                for k, v in mapping.items():
+                    if isinstance(v, int):
+                        result[v] = k
+                    else:
+                        result[int(k)] = v
+                return result
         except Exception:
             return {}
