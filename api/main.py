@@ -9,6 +9,7 @@ from typing import Optional, List, Dict, Any, Union
 from pydantic import BaseModel
 from src.inference.engine import InferenceEngine
 from src.context.advisory import build_detailed_advisory_report
+from src.preprocessing.leaf_validator import validate_leaf_image
 
 app = FastAPI(
     title="Paddy Disease AI API",
@@ -93,7 +94,23 @@ async def predict_disease(
         with open(temp_path, "wb") as buffer:
             shutil.copyfileobj(image.file, buffer)
 
-        # 2. Run Inference
+        # 2. Validate Botanical Leaf Authenticity
+        is_valid, reason_en, reason_te, metrics = validate_leaf_image(temp_path)
+        if not is_valid:
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "error_type": "INVALID_LEAF_IMAGE",
+                    "title": "Invalid Leaf Image",
+                    "title_te": "చెల్లని ఆకు చిత్రం",
+                    "message": f"The uploaded image does not appear to be a paddy leaf. {reason_en}",
+                    "message_te": f"అప్‌లోడ్ చేసిన చిత్రం వరి ఆకులా కనిపించడం లేదు. {reason_te}",
+                    "reason": reason_en,
+                    "metrics": metrics
+                }
+            )
+
+        # 3. Run Inference
         int_age = int(round(age))
         result = engine.predict(
             image_path=temp_path,
@@ -131,6 +148,8 @@ async def predict_disease(
 
         return result
 
+    except HTTPException:
+        raise
     except Exception as e:
         import traceback
         traceback.print_exc()

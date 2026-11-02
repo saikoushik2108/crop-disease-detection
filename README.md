@@ -1,4 +1,4 @@
-# Multimodal Deep Learning for Paddy Disease Classification, Microclimate Telemetry & Autonomous Phytosanitary Advisory
+# Explainable Context Aware Multi Model Deep Learning for Paddy Disease Assessment Using Leaf Imagery and Weather Metadata
 
 [![Status](https://img.shields.io/badge/Status-Complete%20%26%20Field--Ready-brightgreen)](file:///e:/crop-detection/FINAL_PROJECT_STATUS.md)
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)

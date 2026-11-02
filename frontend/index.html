@@ -488,6 +488,46 @@
       display: none;
     }
 
+    .results-invalid {
+      display: none;
+      background: rgba(239, 68, 68, 0.04);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 16px;
+      padding: 36px 24px;
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .invalid-icon-circle {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.12);
+      border: 2px solid rgba(239, 68, 68, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+    }
+
+    .guideline-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    .guideline-card li {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
     .diag-banner {
       background: rgba(15, 23, 42, 0.6);
       border-radius: 12px;
@@ -766,6 +806,17 @@
           <button type="button" class="remove-img-btn" onclick="clearImage(event)">&times;</button>
         </div>
 
+        <!-- Invalid Image Warning Banner -->
+        <div id="leaf-validation-banner" style="display: none; margin-bottom: 16px; padding: 12px 14px; border-radius: 10px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); color: #fca5a5; font-size: 13px;">
+          <div style="display: flex; gap: 8px; align-items: flex-start;">
+            <span style="font-size: 16px; line-height: 1;">⚠️</span>
+            <div>
+              <strong id="banner-val-title" style="color: #f87171; display: block; margin-bottom: 2px;">Invalid Leaf Photograph Detected</strong>
+              <span id="banner-val-desc">The uploaded image does not appear to be a paddy leaf. Please upload a clear photo of a rice leaf.</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Preset Sample Buttons -->
         <div class="sample-pill-group">
           <span style="font-size: 11px; color: var(--text-dim); display: flex; align-items: center; margin-right: 4px;" id="lbl-presets">Preset Samples:</span>
@@ -889,6 +940,37 @@
           </svg>
           <div style="font-size: 15px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;" id="lbl-placeholder-title">Awaiting Leaf Sample</div>
           <div style="font-size: 13px;" id="lbl-placeholder-sub">Upload a photograph or use camera and click "Run Multimodal Diagnosis"</div>
+        </div>
+
+        <!-- Invalid Leaf Alert Display -->
+        <div class="results-invalid" id="invalid-box">
+          <div class="invalid-icon-circle">⚠️</div>
+          <div id="diag-invalid-title" style="font-size: 20px; font-weight: 800; color: #f87171; margin-bottom: 8px;">
+            Invalid Leaf Photograph Detected
+          </div>
+          <div id="diag-invalid-msg" style="font-size: 14px; color: #fca5a5; line-height: 1.6; max-width: 480px; margin: 0 auto 16px;">
+            The uploaded image does not appear to be a paddy leaf. Please upload a clear photo of a rice leaf.
+          </div>
+          <div id="diag-invalid-reason" style="display: inline-block; font-size: 12px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 6px 14px; color: #fca5a5; margin-bottom: 20px; font-family: monospace;">
+            Diagnostic Reason
+          </div>
+
+          <div class="guideline-card">
+            <div style="font-size: 13px; font-weight: 700; color: #38bdf8; margin-bottom: 10px;" id="lbl-invalid-guide-title">
+              💡 Guidelines for Accurate Paddy Leaf Diagnosis:
+            </div>
+            <ul style="padding-left: 18px; margin: 0;">
+              <li id="lbl-invalid-guide-1">Capture a close-up, focused photo of the rice leaf displaying discoloration, lesions, or feeding damage.</li>
+              <li id="lbl-invalid-guide-2">Ensure natural daylight; avoid blurry, shadowy, or extreme angle shots.</li>
+              <li id="lbl-invalid-guide-3">Do not upload pictures of people, vehicles, text documents, or non-crop objects.</li>
+            </ul>
+          </div>
+
+          <div style="margin-top: 24px;">
+            <button type="button" class="action-btn" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-weight: 700; padding: 10px 20px; border-radius: 10px; cursor: pointer;" onclick="document.getElementById('file-input').click()">
+              📷 <span id="lbl-invalid-retry-btn">Upload New Leaf Photo</span>
+            </button>
+          </div>
         </div>
 
         <!-- Active Results Display -->
@@ -1099,7 +1181,14 @@
         blightRisk: "Bacterial Blight Moisture Risk:",
         panicleRisk: "Panicle Blight Heat Trigger:",
         gradcamTitle: "Grad-CAM Visual Saliency Overlay",
-        gradcamDesc: "Red and yellow highlights denote the precise foliar lesion regions attended by the deep network."
+        gradcamDesc: "Red and yellow highlights denote the precise foliar lesion regions attended by the deep network.",
+        invalidLeafTitle: "Invalid Leaf Photograph Detected",
+        invalidLeafSub: "The uploaded image does not appear to be a paddy leaf. Please upload a clear photo of a rice/paddy plant leaf.",
+        invalidGuideTitle: "💡 Guidelines for Accurate Paddy Leaf Diagnosis:",
+        invalidGuide1: "Capture a close-up, focused photo of the rice leaf displaying discoloration, lesions, or feeding damage.",
+        invalidGuide2: "Ensure natural daylight; avoid blurry, shadowy, or extreme angle shots.",
+        invalidGuide3: "Do not upload pictures of people, vehicles, text documents, or non-crop objects.",
+        invalidRetryBtn: "Upload New Leaf Photo"
       },
       te: {
         brandTitle: "వరి రోగ నిర్ధారణ మల్టీమోడల్ AI",
@@ -1143,7 +1232,14 @@
         blightRisk: "ఆకు ఎండు తెగులు తేమ రిస్క్:",
         panicleRisk: "వెన్ను ఎండు తెగులు వేడి రిస్క్:",
         gradcamTitle: "Grad-CAM రోగ లక్షణాల గుర్తింపు మ్యాప్",
-        gradcamDesc: "ఎరుపు మరియు పసుపు రంగుల మచ్చలు మోడల్ గుర్తించిన ప్రధాన వ్యాధి భాగాలను సూచిస్తాయి."
+        gradcamDesc: "ఎరుపు మరియు పసుపు రంగుల మచ్చలు మోడల్ గుర్తించిన ప్రధాన వ్యాధి భాగాలను సూచిస్తాయి.",
+        invalidLeafTitle: "చెల్లని ఆకు చిత్రం గుర్తించబడింది",
+        invalidLeafSub: "అప్‌లోడ్ చేసిన చిత్రం వరి ఆకులా కనిపించడం లేదు. దయచేసి వరి ఆకు యొక్క స్పష్టమైన ఫోటోను అప్‌లోడ్ చేయండి.",
+        invalidGuideTitle: "💡 సరైన వరి ఆకు ఫోటో తీయడానికి సూచనలు:",
+        invalidGuide1: "తెగులు మచ్చలు లేదా మార్పులు ఉన్న వరి ఆకును దగ్గరగా స్పష్టంగా ఫోటో తీయండి.",
+        invalidGuide2: "సహజ వెలుతురులో తీయండి; మసకగా లేదా నీడ పడకుండా చూసుకోండి.",
+        invalidGuide3: "మనుషులు, వాహనాలు, పుస్తకాలు లేదా ఇతర వస్తువుల ఫోటోలు అప్‌లోడ్ చేయవద్దు.",
+        invalidRetryBtn: "మరో ఆకు ఫోటోను అప్‌లోడ్ చేయండి"
       }
     };
 
@@ -1312,6 +1408,22 @@
       document.getElementById("lbl-gradcam-title").innerText = t.gradcamTitle;
       document.getElementById("lbl-gradcam-desc").innerText = t.gradcamDesc;
 
+      // Update invalid leaf box elements
+      const invTitle = document.getElementById("diag-invalid-title");
+      if (invTitle && invTitle.innerText) invTitle.innerText = t.invalidLeafTitle;
+      const invGuide = document.getElementById("lbl-invalid-guide-title");
+      if (invGuide) invGuide.innerText = t.invalidGuideTitle;
+      const invG1 = document.getElementById("lbl-invalid-guide-1");
+      if (invG1) invG1.innerText = t.invalidGuide1;
+      const invG2 = document.getElementById("lbl-invalid-guide-2");
+      if (invG2) invG2.innerText = t.invalidGuide2;
+      const invG3 = document.getElementById("lbl-invalid-guide-3");
+      if (invG3) invG3.innerText = t.invalidGuide3;
+      const invRetry = document.getElementById("lbl-invalid-retry-btn");
+      if (invRetry) invRetry.innerText = t.invalidRetryBtn;
+      const bannerTitle = document.getElementById("banner-val-title");
+      if (bannerTitle) bannerTitle.innerText = t.invalidLeafTitle;
+
       // Update age slider label
       updateAge(document.getElementById("age-slider").value);
 
@@ -1357,7 +1469,51 @@
       }
     });
 
+    function clearInvalidState() {
+      const banner = document.getElementById("leaf-validation-banner");
+      if (banner) banner.style.display = "none";
+      const invalidBox = document.getElementById("invalid-box");
+      if (invalidBox) invalidBox.style.display = "none";
+      const previewImg = document.getElementById("preview-image");
+      if (previewImg) {
+        previewImg.style.border = "none";
+        previewImg.style.boxShadow = "none";
+      }
+    }
+
+    function renderInvalidLeaf(title, msg, reason) {
+      document.getElementById("placeholder-box").style.display = "none";
+      const resultsBox = document.getElementById("results-box");
+      if (resultsBox) resultsBox.style.display = "none";
+      
+      const invalidBox = document.getElementById("invalid-box");
+      if (invalidBox) invalidBox.style.display = "block";
+
+      const titleEl = document.getElementById("diag-invalid-title");
+      if (titleEl) titleEl.innerText = title;
+
+      const msgEl = document.getElementById("diag-invalid-msg");
+      if (msgEl) msgEl.innerText = msg;
+
+      const reasonEl = document.getElementById("diag-invalid-reason");
+      if (reasonEl) reasonEl.innerText = reason ? "Diagnosis Halt: " + reason : "Invalid Image";
+
+      const banner = document.getElementById("leaf-validation-banner");
+      if (banner) {
+        banner.style.display = "block";
+        document.getElementById("banner-val-title").innerText = title;
+        document.getElementById("banner-val-desc").innerText = msg;
+      }
+
+      const previewImg = document.getElementById("preview-image");
+      if (previewImg) {
+        previewImg.style.border = "2px solid #ef4444";
+        previewImg.style.boxShadow = "0 0 15px rgba(239, 68, 68, 0.4)";
+      }
+    }
+
     function handleFileSelect(file) {
+      clearInvalidState();
       activeFile = file;
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -1370,15 +1526,20 @@
 
     function clearImage(e) {
       if (e) e.stopPropagation();
+      clearInvalidState();
       activeFile = null;
       fileInput.value = "";
       document.getElementById("camera-input").value = "";
       document.getElementById("preview-box").style.display = "none";
       document.getElementById("drop-zone").style.display = "block";
+      document.getElementById("placeholder-box").style.display = "flex";
     }
 
     // Preset Sample Loader
     async function loadSample(disease, variety, age) {
+      clearInvalidState();
+      document.getElementById("placeholder-box").style.display = "flex";
+      document.getElementById("results-box").style.display = "none";
       document.getElementById("variety-select").value = variety;
       document.getElementById("age-slider").value = age;
       updateAge(age);
@@ -1504,16 +1665,41 @@
                 body: formData
               });
             } catch (proxyErr) {
-              throw new Error("Cannot connect to backend server at http://127.0.0.1:8000. Please ensure the Python API server is running (`python -m uvicorn api.main:app --port 8000`).");
+              throw new Error("Cannot connect to backend server at http://127.0.0.1:8000.\n\nPlease start the Python backend server:\n.venv\\Scripts\\python.exe -m uvicorn api.main:app --host 127.0.0.1 --port 8000 --reload");
             }
           } else {
-            throw new Error("Cannot connect to backend server. Please ensure the Python API server is running on port 8000.");
+            throw new Error("Cannot connect to backend server on port 8000. Please start the Python backend server.");
           }
         }
 
-        if (!res.ok) {
-          const errDetail = await res.text();
-          throw new Error("Prediction API failed with status " + res.status + " (" + errDetail + ")");
+        if (!res || !res.ok) {
+          let errDetail = "";
+          try {
+            errDetail = await res.text();
+          } catch (_) {}
+
+          // Handle 400 Invalid Leaf Image
+          if (res.status === 400) {
+            try {
+              const errJson = JSON.parse(errDetail);
+              const detail = errJson.detail || {};
+              if (detail.error_type === "INVALID_LEAF_IMAGE") {
+                const title = currentLang === 'te' ? (detail.title_te || detail.title) : detail.title;
+                const msg = currentLang === 'te' ? (detail.message_te || detail.message) : detail.message;
+                renderInvalidLeaf(title, msg, detail.reason);
+                alert(title + ":\n\n" + msg);
+                return;
+              }
+            } catch (parseErr) {
+              // fall through
+            }
+          }
+
+          // If Vite proxy returned 500 because the target backend on port 8000 is down
+          if (res.status === 500 && (!errDetail || errDetail.trim() === "" || errDetail.includes("ECONNREFUSED") || errDetail.includes("proxy error"))) {
+            throw new Error("Backend server is not running at http://127.0.0.1:8000.\n\nPlease start the Python backend server:\n.venv\\Scripts\\python.exe -m uvicorn api.main:app --host 127.0.0.1 --port 8000 --reload");
+          }
+          throw new Error("Prediction API failed with status " + res.status + (errDetail ? " (" + errDetail + ")" : ""));
         }
 
         const data = await res.json();
@@ -1529,6 +1715,7 @@
     }
 
     function renderResults(data) {
+      clearInvalidState();
       document.getElementById("placeholder-box").style.display = "none";
       const resultsBox = document.getElementById("results-box");
       resultsBox.style.display = "block";
